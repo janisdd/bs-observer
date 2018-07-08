@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>BS Observer</title>
+    <meta charset="UTF-8">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    <link rel="stylesheet" href="../node_modules/bulma/css/bulma.css">
+    <!--<link rel="stylesheet" href="../node_modules/bulma-extensions/bulma-divider/dist/css/bulma-divider.min.css">-->
+    <link rel="stylesheet" href="../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
+</head>
+<body>
+<div id="root" style="height: 100%">
+</div>
+
+
+<script src="../node_modules/react/dist/react.js"></script>
+<script src="../node_modules/react-dom/dist/react-dom.js"></script>
+
+
+<% for(var i = 0; i < htmlWebpackPlugin.files.js.length;i++) { %>
+
+<script src="<%= htmlWebpackPlugin.files.js[i] %>"></script>
+
+<%}%>
+
+</body>
+</html>
