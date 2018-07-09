@@ -46,6 +46,7 @@ export class SeriesComparer {
 
       //preserve
       newSingleSeries.state = oldSingleSeries.state
+      newSingleSeries.isMarked = oldSingleSeries.isMarked
 
       this.compareSingleSeries(oldSingleSeries, newSingleSeries)
     }

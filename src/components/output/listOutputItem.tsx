@@ -22,6 +22,31 @@ class ListOutputItem extends React.Component<Props, any> {
         <div className="box has-ribbon">
 
           <div className="top-right-box-button">
+
+            {
+              this.props.series.isMarked &&
+              <span className="icon  has-text-danger clickable tooltip series-marker"
+                    data-tooltip="Markiert die Serie. Markiert serien werden vorn dargestellt"
+                    onClick={() => {
+                      this.props.state.setSeriesIsMarked(this.props.series, false)
+                    }}
+              >
+              <i className="fas fa-lg fa-bookmark"></i>
+            </span>
+            }
+
+            {
+              !this.props.series.isMarked &&
+              <span className="icon  has-text-danger clickable tooltip series-marker"
+                    data-tooltip="Markiert die Serie. Markiert serien werden vorn dargestellt"
+                    onClick={() => {
+                      this.props.state.setSeriesIsMarked(this.props.series, true)
+                    }}
+              >
+              <i className="far fa-lg fa-bookmark"></i>
+            </span>
+            }
+
             <a className={['button', 'is-white'].join(' ')}
                onClick={() => {
                  this.props.state.resetIsNewState(this.props.series)
@@ -39,6 +64,22 @@ class ListOutputItem extends React.Component<Props, any> {
           <article className="media">
 
             <div className="media-left sticky-pos" style={{top: '0.5em'}}>
+
+              {
+                //check because legacy
+                this.props.series.lastQueriedAt &&
+                <div className="last-queried-at">
+                <span className="icon is-small icon-margin tooltip hoverable"
+                      style={{fontSize: '0.8em'}}
+                      data-tooltip="Zuletzt geprüft">
+                  <i className="fas fa-redo"></i>
+                </span>
+                  <span className="mar-right-half">{getDateAsString(this.props.series.lastQueriedAt)}</span>
+                  <span>{getTimeAsString(this.props.series.lastQueriedAt)}</span>
+                </div>
+              }
+
+
               <div className="image">
                 {
                   this.props.series.imgUrl !== null &&
@@ -257,3 +298,15 @@ class ListOutputItem extends React.Component<Props, any> {
 }
 
 export default ListOutputItem
+
+function getDateAsString(date: Date): string {
+
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+
+}
+
+function getTimeAsString(date: Date): string {
+
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+
+}

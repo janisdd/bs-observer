@@ -29,6 +29,15 @@ interface Series {
   //  * user then needs to set it manually to false (to indicate that it was noticed that something was new)
   //  */
   // preserveChanges: boolean
+  lastQueriedAt: Date
+
+  /**
+   * this is preserved across queries
+   *
+   * true: the series is marked and displayed top
+   * false: not (default)
+   */
+  isMarked: boolean
 }
 
 

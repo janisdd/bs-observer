@@ -43,7 +43,7 @@ class ListOutputArea extends React.Component<Props, any> {
     let series = this.props.appState.series
 
     if (this.props.appState.invertSeriesOrder) {
-        series = series.reverse()
+      series = series.slice().reverse()
     }
 
     if (this.props.appState.showOnlyChangedSeries) {
@@ -54,7 +54,18 @@ class ListOutputArea extends React.Component<Props, any> {
       series = this.getSearchResults(series)
     }
 
-    console.log(series)
+    //then display marked first
+
+    series = series.sort((a, b) => {
+      if (a.isMarked && !b.isMarked) {
+        return -1
+      }
+      else if (!a.isMarked && b.isMarked) {
+        return 1
+      }
+
+      return 0
+    })
 
     return (
       <div>

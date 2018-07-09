@@ -14,9 +14,7 @@ export class AppState {
    * @type {any[]}
    */
   @observable seriesUrlsText: string =
-    `https://bs.to/serie/Burst-Angel/1
-https://bs.to/serie/Tokyo-Ghoul/3
-`
+    ``
 
   @observable isLoaderDisplayed: boolean = false
 
@@ -57,6 +55,12 @@ https://bs.to/serie/Tokyo-Ghoul/3
 
 
   //--- actions
+
+  @action
+  setSeriesIsMarked(series: Series, isMarked: boolean) {
+    series.isMarked = isMarked
+    this.writeState()
+  }
 
   @action
   setSeriesListFromSeries() {
@@ -148,7 +152,6 @@ https://bs.to/serie/Tokyo-Ghoul/3
   @action
   updateSeriesUrlsText(text: string) {
     this.seriesUrlsText = text
-    console.log(this.seriesUrlsText)
   }
 
   @action
@@ -208,6 +211,9 @@ https://bs.to/serie/Tokyo-Ghoul/3
       runInAction(() => {
         this.oldSeries = this.series
         this.series = series
+
+        //normalize the list after we got the series
+        this.setSeriesListFromSeries()
 
         this.compareSeries()
 
@@ -406,7 +412,6 @@ https://bs.to/serie/Tokyo-Ghoul/3
       }
 
       this.seriesBaseUrls.push(baseUrl)
-      console.log(baseUrl)
     }
   }
 

@@ -5,6 +5,7 @@ export class Capture {
 
     console.log('Start')
 
+    const now = new Date()
     const series: Series[] = []
 
     // const promises: Promise<Series>[] = []
@@ -13,7 +14,7 @@ export class Capture {
       // promises.push(this.getSeriesState(baseUrl))
 
       try {
-        const _series = await this.getSeriesState(baseUrl)
+        const _series = await this.getSeriesState(baseUrl, now)
         series.push(_series)
         onOneCaptureFinished(series.length)
       } catch (err) {
@@ -27,9 +28,10 @@ export class Capture {
   /**
    *
    * @param {string} baseUrl e.g. https://bs.to/serie/Sword-Art-Online
+   * @param queryDate
    * @returns {Promise<Series>}
    */
-  public static async getSeriesState(baseUrl: string): Promise<Series> {
+  public static async getSeriesState(baseUrl: string, queryDate: Date): Promise<Series> {
 
     let response = await axios.get<string>(baseUrl, {
       responseType: 'document'
@@ -64,7 +66,9 @@ export class Capture {
       name: title !== '' ? title : baseUrl.substring(baseUrl.lastIndexOf('/') + 1),
       imgUrl,
       selectedSeasonId: null,
-      state: null
+      state: null,
+      lastQueriedAt: new Date(queryDate.valueOf()), //to not keep a reference
+      isMarked: false
     }
 
     while ((node = result.iterateNext()) !== null) {
@@ -79,7 +83,7 @@ export class Capture {
 
     for (const season of series.seasons) {
 
-      response = await axios.get<string>(season.url,{
+      response = await axios.get<string>(season.url, {
         responseType: 'document'
       })
 

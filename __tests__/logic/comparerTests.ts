@@ -8,7 +8,9 @@ const noSeasonSeries: () => Series = () => {
     selectedSeasonId: null,
     name: 'test',
     imgUrl: null,
-    seasons: []
+    seasons: [],
+    lastQueriedAt: new Date(),
+    isMarked: false
   }
 }
 
@@ -26,7 +28,9 @@ const oneEmptySeasonSeries: () => Series = () => {
         state: null,
         url: ''
       }
-    ]
+    ],
+    lastQueriedAt: new Date(),
+    isMarked: false
   }
 }
 
@@ -53,7 +57,9 @@ const oneEpisodeOneSeasonSeries: () => Series = () => {
         state: null,
         url: ''
       }
-    ]
+    ],
+    lastQueriedAt: new Date(),
+    isMarked: false
   }
 }
 
@@ -80,7 +86,9 @@ const oneEpisodeWithGerOneSeasonSeries: () => Series = () => {
         state: null,
         url: ''
       }
-    ]
+    ],
+    lastQueriedAt: new Date(),
+    isMarked: false
   }
 }
 

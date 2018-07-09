@@ -69,9 +69,9 @@ class FilterArea extends React.Component<Props, any> {
                      }}
               />
               <label htmlFor={'show-new-series-first'}>
-                <span>Kehre Reihenfolge der Serien um</span>
+                <span>Kehre Reihenfolge der Serien um (siehe Liste)</span>
                 <span className="icon has-text-info tooltip is-tooltip-multiline"
-                      data-tooltip="Das ist praktisch, wenn man die Liste der serien Schritt für Schritt erweitert und neue Serien unten anfügt">
+                      data-tooltip="Das ist praktisch, wenn man die Liste der Serien Schritt für Schritt erweitert und neue Serien unten an die Liste anfügt">
                 <i className="fas fa-info-circle"/>
               </span>
               </label>

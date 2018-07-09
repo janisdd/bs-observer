@@ -108,7 +108,7 @@ export class FrontendManager {
     let state: ExportAppState | null = null
 
     try {
-      state = JSON.parse(stateString)
+      state = JSON.parse(stateString, dateTimeReviver)
     } catch (err) {
       throw err
     }
@@ -156,3 +156,20 @@ export interface ExportAppState {
   seriesList: string
 
 }
+
+//from https://weblog.west-wind.com/posts/2014/Jan/06/JavaScript-JSON-Date-Parsing-and-real-Dates
+const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+const reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
+function dateTimeReviver(key: string, value: any) {
+  if (typeof value === 'string') {
+    var a = reISO.exec(value);
+    if (a)
+      return new Date(value);
+    a = reMsAjax.exec(value);
+    if (a) {
+      var b = a[1].split(/[-+,.]/);
+      return new Date(b[0] ? +b[0] : 0 - +b[1]);
+    }
+  }
+  return value;
+};
