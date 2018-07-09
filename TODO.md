@@ -20,7 +20,3 @@ workflow
 
 
 - create readme
-- add filter which has new
-- add sorting (latest in added list should be first) (only ui)
-- save on season select?
-- unter bild: alle ger gesehen? alle eng gesehen? oder farbe?

@@ -1,6 +1,7 @@
 # Changelog
 
 
+- we now mark seasons if on episode has changed (added/translated)
 - cleaned up package.json
 - added some filters (show only new, reverse order)
 - added save status button

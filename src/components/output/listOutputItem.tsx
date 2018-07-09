@@ -100,7 +100,7 @@ class ListOutputItem extends React.Component<Props, any> {
                                 this.props.series.selectedSeasonId === value.seasonId ? 'is-primary' : '',
                                 value.state === 'new' ? 'badge' : ''
                               ].join(' ')}
-                              data-badge={value.state === 'new' ? 'Neu' : null}
+                              data-badge={value.state === 'new' ? '' : null}
                               style={{marginRight: value.state === 'new' ? '1em' : '0'}}
 
                               onClick={() => {

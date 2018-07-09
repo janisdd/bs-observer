@@ -74,12 +74,12 @@ export class SeriesComparer {
    */
   private static compareSingleSeries(oldSeries: Series, series: Series): void {
 
-    //iterate new episodes
+    //iterate new seasons
     for (let i = oldSeries.seasons.length; i < series.seasons.length; i++) {
 
-      if (series.seasons[i].episodes.length > 0) {
+      // if (series.seasons[i].episodes.length > 0) {
         series.seasons[i].state = 'new'
-      }
+      // }
 
 
       //set all episodes in the new season to new
@@ -132,6 +132,9 @@ export class SeriesComparer {
         //check if we have a new lang
         if (oldEpisode.name_ger === null && episode.name_ger !== null) {
           episode.state = 'gerAdded'
+
+          //also mark the parent (season)
+          season.state = "new"
           continue
         }
 
