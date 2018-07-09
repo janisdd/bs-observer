@@ -11,7 +11,51 @@ interface Props {
 
 @observer
 class ListOutputArea extends React.Component<Props, any> {
+
+  getSearchResults(series: Series[]): Series[] {
+
+    let searchText = this.props.appState.searchText.toLowerCase()
+
+    return series.filter(singleSeries => {
+
+      if (singleSeries.name.toLowerCase().indexOf(searchText) !== -1) {
+        return true
+      }
+
+      for (const season of singleSeries.seasons) {
+
+        for (const episode of season.episodes) {
+
+          if (episode.name_en.toLowerCase().indexOf(searchText) !== -1) {
+            return true
+          }
+
+          if (episode.name_ger !== null && episode.name_ger.toLowerCase().indexOf(searchText) !== -1) {
+            return true
+          }
+        }
+      }
+    })
+  }
+
   render(): JSX.Element {
+
+    let series = this.props.appState.series
+
+    if (this.props.appState.invertSeriesOrder) {
+        series = series.reverse()
+    }
+
+    if (this.props.appState.showOnlyChangedSeries) {
+      series = series.filter(p => this.props.appState.getHasSeriesSomethingNew(p))
+    }
+
+    if (this.props.appState.isFilterAreaDisplayed) {
+      series = this.getSearchResults(series)
+    }
+
+    console.log(series)
+
     return (
       <div>
 
@@ -30,25 +74,15 @@ class ListOutputArea extends React.Component<Props, any> {
 
 
           {
-            this.props.appState.isLoaderDisplayed === false && this.props.appState.series.length > 0 && this.props.appState.isFilterAreaDisplayed === false &&
-            this.props.appState.series.map((value, index) => {
+            this.props.appState.isLoaderDisplayed === false && this.props.appState.series.length > 0 &&
+            series.map((value, index) => {
               return (
                 <div className="list-element" key={value.baseUrl}>
                   <ListOutputItem state={this.props.appState} series={value}/>
                 </div>
               )
             })
-          }
 
-          {
-            this.props.appState.isLoaderDisplayed === false && this.props.appState.series.length > 0 && this.props.appState.isFilterAreaDisplayed &&
-            this.props.appState.searchResults.map((value, index) => {
-              return (
-                <div className="list-element" key={value.baseUrl}>
-                  <ListOutputItem state={this.props.appState} series={value}/>
-                </div>
-              )
-            })
           }
 
         </div>

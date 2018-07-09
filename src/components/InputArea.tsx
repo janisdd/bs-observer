@@ -28,6 +28,18 @@ class InputArea extends React.Component<Props, any> {
                           onChange={(e) => this.updateInput(e)}
                 ></textarea>
 
+          <a className="button is-primary"
+             onClick={() => {
+
+               this.props.appState.setSeriesListFromSeries()
+
+             }}
+          >
+            <span className="icon is-small">
+              <i className="fas fa-asterisk"></i>
+            </span>
+            <span>Erstelle Liste von Serien</span>
+          </a>
 
           {/*<a className="button is-primary"*/}
              {/*onClick={async () => {*/}

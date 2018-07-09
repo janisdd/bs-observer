@@ -2,7 +2,7 @@ import {action, runInAction, observable, computed} from "mobx"
 import {Normalizer} from "../helpers/normalizer";
 import {Capture} from "../helpers/capture";
 import {SeriesComparer} from "../helpers/seriesComparer";
-import {FrontendManager} from "../helpers/frontendManager";
+import {ExportAppState, FrontendManager} from "../helpers/frontendManager";
 
 const ReactNotifications = require('react-notifications/dist/react-notifications')
 
@@ -37,6 +37,10 @@ https://bs.to/serie/Tokyo-Ghoul/3
   @observable importString = ''
   @observable importStringSizeString = ''
 
+  @observable showOnlyChangedSeries = false
+
+  @observable invertSeriesOrder = true
+
   /**
    * matches seriesBaseUrls length to indicate the progress
    * @type {number}
@@ -51,34 +55,16 @@ https://bs.to/serie/Tokyo-Ghoul/3
     return this.progressCount * 100 / this.seriesBaseUrls.length
   }
 
-  @computed
-  get searchResults(): Series[] {
-
-    let searchText = this.searchText.toLowerCase()
-
-    return this.series.filter(series => {
-
-      if (series.name.toLowerCase().indexOf(searchText) !== -1) {
-        return true
-      }
-
-      for (const season of series.seasons) {
-
-        for (const episode of season.episodes) {
-
-          if (episode.name_en.toLowerCase().indexOf(searchText) !== -1) {
-            return true
-          }
-
-          if (episode.name_ger !== null && episode.name_ger.toLowerCase().indexOf(searchText) !== -1) {
-            return true
-          }
-        }
-      }
-    })
-  }
 
   //--- actions
+
+  @action
+  setSeriesListFromSeries() {
+
+    if (this.series.length === 0) return
+
+    this.seriesUrlsText = this.series.map(p => p.baseUrl).join('\n')
+  }
 
   @action
   setImportString(text: string) {
@@ -98,6 +84,7 @@ https://bs.to/serie/Tokyo-Ghoul/3
         return
       }
       this.series = state.series
+      this.seriesUrlsText = state.seriesList
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnten nicht importiert werden')
@@ -105,7 +92,17 @@ https://bs.to/serie/Tokyo-Ghoul/3
     }
     ReactNotifications.NotificationManager.success('Status wurde importiert', '', 3000)
     this.isImportAreaDisplayed = false
-    this.writeSeries()
+    this.writeState()
+  }
+
+  @action
+  setInvertSeriesOrder(showNewSeriesFirst: boolean) {
+    this.invertSeriesOrder = showNewSeriesFirst
+  }
+
+  @action
+  setShowOnlyChangedSeries(showOnlyChangedSeries: boolean) {
+    this.showOnlyChangedSeries = showOnlyChangedSeries
   }
 
   @action
@@ -171,7 +168,7 @@ https://bs.to/serie/Tokyo-Ghoul/3
       }
     }
 
-    this.writeSeries()
+    this.writeState()
   }
 
 
@@ -214,17 +211,20 @@ https://bs.to/serie/Tokyo-Ghoul/3
 
         this.compareSeries()
 
-        this.writeSeries()
+        this.writeState()
 
       })
     }, 300)
   }
 
   @action
-  async writeSeries() {
+  async writeState() {
 
     try {
-      await FrontendManager.writeSeries(this.series)
+
+      const seriesUrls = this.seriesUrlsText.trim() === '' ? this.series.map(p => p.baseUrl).join('\n') : this.seriesUrlsText
+
+      await FrontendManager.writeSeries(this.series, seriesUrls)
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnte nicht gespeichert werden')
@@ -258,7 +258,7 @@ https://bs.to/serie/Tokyo-Ghoul/3
   @action
   async loadLastState() {
 
-    let lastState: Series[] | null = []
+    let lastState: ExportAppState | null = null
 
     try {
       lastState = await FrontendManager.readSeries()
@@ -276,7 +276,8 @@ https://bs.to/serie/Tokyo-Ghoul/3
     runInAction(() => {
       this.exportString = FrontendManager.lastStateString
       this.exportStringSizeString = FrontendManager.lastStateStringSizeString
-      this.series = lastState as Series[]
+      this.seriesUrlsText = (lastState as ExportAppState).seriesList
+      this.series = (lastState as ExportAppState).series
       console.log(`loaded old series (${this.series.length})`)
     })
   }
@@ -291,7 +292,7 @@ https://bs.to/serie/Tokyo-Ghoul/3
       episode.watchedGer = watched
     }
 
-    this.writeSeries()
+    this.writeState()
 
   }
 
@@ -302,14 +303,16 @@ https://bs.to/serie/Tokyo-Ghoul/3
 
 
   @action
-  selectSeason(series: Series, season: Season | null): void {
+  setSelectSeason(series: Series, season: Season | null): void {
 
     if (season === null) {
       series.selectedSeasonId = null
+      this.writeState()
       return
     }
 
     series.selectedSeasonId = season.seasonId
+    this.writeState()
   }
 
   /**
@@ -323,6 +326,55 @@ https://bs.to/serie/Tokyo-Ghoul/3
 
   //--- getters
 
+
+  /**
+   * checks if we watched all ger/eng episodes
+   * @param {Series} series
+   * @param {boolean} eng
+   * @param {boolean} excludeSpecials
+   * @returns {boolean}
+   */
+  getWatchedAll(series: Series, eng: boolean, excludeSpecials = true): boolean {
+
+    for (const season of series.seasons) {
+
+      if (excludeSpecials && season.seasonId === '0') {
+        continue
+      }
+
+      for (const episode of season.episodes) {
+
+        if (eng && episode.watchedEng === false) {
+          return false
+        }
+
+        if (!eng && episode.watchedGer === false) {
+          return false
+        }
+
+      }
+    }
+
+    return true
+  }
+
+  /**
+   * if a season or an episode is in a new state
+   */
+  getHasSeriesSomethingNew(series: Series): boolean {
+
+    // if (series.state === 'new') return true
+
+    for (const season of series.seasons) {
+      if (season.state === "new") return true
+
+      for (const episode of season.episodes) {
+        if (episode.state === "new" || episode.state === "newAndGer" || episode.state === "gerAdded") return true
+      }
+    }
+
+    return false
+  }
 
   getSelectedSeason(series: Series): Season | null {
 

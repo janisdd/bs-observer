@@ -22,7 +22,7 @@ class ListOutputItem extends React.Component<Props, any> {
         <div className="box has-ribbon">
 
           <div className="top-right-box-button">
-            <a className={['button','is-white'].join(' ')}
+            <a className={['button', 'is-white'].join(' ')}
                onClick={() => {
                  this.props.state.resetIsNewState(this.props.series)
                }}
@@ -53,6 +53,32 @@ class ListOutputItem extends React.Component<Props, any> {
                   </div>
                 }
               </div>
+
+              {
+                this.props.state.getWatchedAll(this.props.series, false) &&
+                <div className="seen-all-ribbon">
+                  <span className="icon icon-margin">
+                    <i className="fas fa-glasses"></i>
+                  </span>
+                  <span>
+                    Alle Deu gesehen
+                  </span>
+                </div>
+              }
+
+              {
+                this.props.state.getWatchedAll(this.props.series, true) &&
+                <div className="seen-all-ribbon eng">
+                  <span className="icon icon-margin">
+                    <i className="fas fa-glasses"></i>
+                  </span>
+                  <span>
+                    Alle Eng gesehen
+                  </span>
+                </div>
+              }
+
+
             </div>
             <div className="media-content" style={{marginTop: '1em'}}>
               <div className="content">
@@ -80,11 +106,11 @@ class ListOutputItem extends React.Component<Props, any> {
                               onClick={() => {
 
                                 if (selectedSeason !== null && value === selectedSeason) {
-                                  this.props.state.selectSeason(this.props.series, null)
+                                  this.props.state.setSelectSeason(this.props.series, null)
                                   return
                                 }
 
-                                this.props.state.selectSeason(this.props.series, value)
+                                this.props.state.setSelectSeason(this.props.series, value)
                               }}
                             >
                               {value.seasonId === '0' ? 'Specials' : value.seasonId}
@@ -106,14 +132,16 @@ class ListOutputItem extends React.Component<Props, any> {
                         <th>Deu</th>
                         <th>
                           <span>Gesehen</span>
-                          <span className="icon has-text-info icon-margin clickable"
+                          <span className="icon has-text-info icon-margin clickable tooltip"
+                                data-tooltip="Setzte alle auf gesehen"
                                 onClick={() => {
                                   this.props.state.setAllEpisodesToWatchedState(selectedSeason, false, true)
                                 }}
                           >
                            <i className="fas fa-check-square"></i>
                          </span>
-                          <span className="icon has-text-info icon-margin clickable"
+                          <span className="icon has-text-info icon-margin clickable tooltip"
+                                data-tooltip="Setzte alle auf ungesehen"
                                 onClick={() => {
                                   this.props.state.setAllEpisodesToWatchedState(selectedSeason, false, false)
                                 }}
@@ -124,18 +152,20 @@ class ListOutputItem extends React.Component<Props, any> {
                         <th>Eng</th>
                         <th>
                           <span>Gesehen</span>
-                          <span className="icon has-text-info icon-margin clickable"
+                          <span className="icon has-text-info icon-margin clickable tooltip"
+                                data-tooltip="Setzte alle auf gesehen"
                                 onClick={() => {
                                   this.props.state.setAllEpisodesToWatchedState(selectedSeason, true, true)
                                 }}
                           >
                            <i className="fas fa-check-square"></i>
                          </span>
-                        <span className="icon has-text-info icon-margin clickable"
-                              onClick={() => {
-                                this.props.state.setAllEpisodesToWatchedState(selectedSeason, true, false)
-                              }}
-                        >
+                          <span className="icon has-text-info icon-margin clickable tooltip"
+                                data-tooltip="Setzte alle auf ungesehen"
+                                onClick={() => {
+                                  this.props.state.setAllEpisodesToWatchedState(selectedSeason, true, false)
+                                }}
+                          >
                             <i className="far fa-check-square"></i>
                           </span>
                         </th>

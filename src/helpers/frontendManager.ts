@@ -1,5 +1,4 @@
 import {appVersion} from "../constants";
-import fileSaver = require("file-saver");
 
 export class FrontendManager {
 
@@ -18,7 +17,7 @@ export class FrontendManager {
 
   }
 
-  public static writeSeries(series: Series[]): Promise<void> {
+  public static writeSeries(series: Series[], seriesList: string): Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
       const copySeries: Series[] = series
@@ -58,9 +57,10 @@ export class FrontendManager {
       // }
 
 
-      const state: AppState = {
+      const state: ExportAppState = {
         version: appVersion,
-        series: copySeries
+        series: copySeries,
+        seriesList
       }
 
       const stateString = JSON.stringify(state)
@@ -79,9 +79,9 @@ export class FrontendManager {
     })
   }
 
-  public static readSeries(): Promise<Series[] | null> {
+  public static readSeries(): Promise<ExportAppState | null> {
 
-    return new Promise<Series[] | null>((resolve, reject) => {
+    return new Promise<ExportAppState | null>((resolve, reject) => {
 
       const stateString = localStorage.getItem(this.stateKey)
 
@@ -99,13 +99,13 @@ export class FrontendManager {
       }
 
 
-      resolve(state.series)
+      resolve(state)
     })
   }
 
-  public static readStatusFromString(stateString: string): AppState | null {
+  public static readStatusFromString(stateString: string): ExportAppState | null {
 
-    let state: AppState | null = null
+    let state: ExportAppState | null = null
 
     try {
       state = JSON.parse(stateString)
@@ -149,9 +149,10 @@ export class FrontendManager {
 }
 
 
-interface AppState {
+export interface ExportAppState {
 
   version: string
   series: Series[]
+  seriesList: string
 
 }

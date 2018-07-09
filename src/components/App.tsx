@@ -38,6 +38,44 @@ class App extends React.Component<Props, any> {
           <div className="navbar-menu">
             <div className="navbar-start">
               <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
+                 onClick={async () => {
+
+                   if (this.props.appState.isLoaderDisplayed) {
+                     return
+                   }
+
+                   await this.props.appState.captureBsState()
+                 }}>
+                <span className="icon has-text-info icon-margin">
+                    <i className="fas fg-lg fa-play"></i>
+                </span>
+                <span>
+                Prüfen & Vergleichen
+                  </span>
+              </a>
+
+            </div>
+
+            <div className="navbar-end">
+
+              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
+                 onClick={() => {
+
+                   if (this.props.appState.isLoaderDisplayed) {
+                     return
+                   }
+
+                   this.props.appState.setIsFilterAreaDisplayed(!this.props.appState.isFilterAreaDisplayed)
+                 }}>
+
+                  <span className="icon has-text-info icon-margin">
+                    <i className="fas fa-lg fa-search"></i>
+                </span>
+
+                <span>Filter & Suche</span>
+              </a>
+
+              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
                  onClick={() => {
 
                    if (this.props.appState.isLoaderDisplayed) {
@@ -62,42 +100,22 @@ class App extends React.Component<Props, any> {
               </a>
 
               <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
-                 onClick={() => {
-
-                   if (this.props.appState.isLoaderDisplayed) {
-                     return
-                   }
-
-                   this.props.appState.setIsFilterAreaDisplayed(!this.props.appState.isFilterAreaDisplayed)
-                 }}>
-
-                  <span className="icon has-text-info icon-margin">
-                    <i className="fas fa-lg fa-search"></i>
-                </span>
-
-                <span>Filter & Suche</span>
-              </a>
-
-              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
                  onClick={async () => {
 
                    if (this.props.appState.isLoaderDisplayed) {
                      return
                    }
 
-                   await this.props.appState.captureBsState()
+                   await this.props.appState.writeState()
                  }}>
-                <span className="icon has-text-info icon-margin">
-                    <i className="fas fg-lg fa-play"></i>
+                <span className="icon has-text-info">
+                    <i className="fas fg-lg fa-save"></i>
                 </span>
                 <span>
-                Prüfen & Vergleichen
-                  </span>
+
+                </span>
               </a>
 
-            </div>
-
-            <div className="navbar-end">
               <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
                  onClick={async () => {
 
@@ -111,7 +129,7 @@ class App extends React.Component<Props, any> {
                     <i className="fas fg-lg fa-upload"></i>
                 </span>
                 <span>
-                  Status exportieren
+                  Export
                 </span>
               </a>
 
@@ -128,7 +146,7 @@ class App extends React.Component<Props, any> {
                     <i className="fas fg-lg fa-download"></i>
                 </span>
                 <span>
-                  Status import
+                   Import
                 </span>
               </a>
 
