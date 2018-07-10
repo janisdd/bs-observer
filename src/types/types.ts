@@ -43,10 +43,11 @@ interface Series {
 
 interface Season {
 
-  /**
-   * e.g. https://bs.to/serie/The-Asterisk-War/1
-   */
-  url: string
+  //not used, not needed
+  // /**
+  //  * e.g. https://bs.to/serie/The-Asterisk-War/1
+  //  */
+  // url: string
 
   /**
    * can be 0, 1, ...
@@ -64,12 +65,13 @@ interface Season {
 
 
 interface Episode {
-  /**
-   * the url can change because the name of the episode is part of the url
-   * if we have only en then the url is en
-   * if we have german then the url contains the ger words
-   */
-  url: string
+  //not used, not needed and see description for issue
+  // /**
+  //  * the url can change because the name of the episode is part of the url
+  //  * if we have only en then the url is en
+  //  * if we have german then the url contains the ger words
+  //  */
+  // url: string
   /**
    * for compression we might set this to ''
    */

@@ -44,7 +44,7 @@ class App extends React.Component<Props, any> {
                      return
                    }
 
-                   await this.props.appState.captureBsState()
+                   await this.props.appState.captureBsStateFromOld()
                  }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-play"></i>
@@ -58,15 +58,16 @@ class App extends React.Component<Props, any> {
 
             <div className="navbar-end">
 
-              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
-                 onClick={() => {
+              <a
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isFilterAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                onClick={() => {
 
-                   if (this.props.appState.isLoaderDisplayed) {
-                     return
-                   }
+                  if (this.props.appState.isLoaderDisplayed) {
+                    return
+                  }
 
-                   this.props.appState.setIsFilterAreaDisplayed(!this.props.appState.isFilterAreaDisplayed)
-                 }}>
+                  this.props.appState.setIsFilterAreaDisplayed(!this.props.appState.isFilterAreaDisplayed)
+                }}>
 
                   <span className="icon has-text-info icon-margin">
                     <i className="fas fa-lg fa-search"></i>
@@ -75,28 +76,23 @@ class App extends React.Component<Props, any> {
                 <span>Filter & Suche</span>
               </a>
 
-              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
-                 onClick={() => {
+              <a
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isInputAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                onClick={() => {
 
-                   if (this.props.appState.isLoaderDisplayed) {
-                     return
-                   }
+                  if (this.props.appState.isLoaderDisplayed) {
+                    return
+                  }
 
-                   this.props.appState.setIsInputAreaDisplayed(!this.props.appState.isInputAreaDisplayed)
-                 }}>
-                {
-                  this.props.appState.isInputAreaDisplayed &&
+                  this.props.appState.setIsInputAreaDisplayed(!this.props.appState.isInputAreaDisplayed)
+                }}>
+
+
                   <span className="icon has-text-info icon-margin">
-                  <i className="fas fa-book-open"></i>
+                    <i className="fas fa-lg fa-plus"></i>
                 </span>
-                }
-                {
-                  this.props.appState.isInputAreaDisplayed === false &&
-                  <span className="icon has-text-info icon-margin">
-                    <i className="fas fa-lg fa-book"></i>
-                </span>
-                }
-                <span>Liste bearbeiten</span>
+
+                <span>Hinzufügen</span>
               </a>
 
               <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
@@ -111,20 +107,18 @@ class App extends React.Component<Props, any> {
                 <span className="icon has-text-info">
                     <i className="fas fg-lg fa-save"></i>
                 </span>
-                <span>
-
-                </span>
               </a>
 
-              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
-                 onClick={async () => {
+              <a
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isExportAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                onClick={async () => {
 
-                   if (this.props.appState.isLoaderDisplayed) {
-                     return
-                   }
+                  if (this.props.appState.isLoaderDisplayed) {
+                    return
+                  }
 
-                   this.props.appState.setIsExportAreaDisplayed(!this.props.appState.isExportAreaDisplayed)
-                 }}>
+                  this.props.appState.setIsExportAreaDisplayed(!this.props.appState.isExportAreaDisplayed)
+                }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-upload"></i>
                 </span>
@@ -133,15 +127,16 @@ class App extends React.Component<Props, any> {
                 </span>
               </a>
 
-              <a className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : ''].join(' ')}
-                 onClick={async () => {
+              <a
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isImportAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                onClick={async () => {
 
-                   if (this.props.appState.isLoaderDisplayed) {
-                     return
-                   }
+                  if (this.props.appState.isLoaderDisplayed) {
+                    return
+                  }
 
-                   this.props.appState.setIsImportAreaDisplayed(!this.props.appState.isImportAreaDisplayed)
-                 }}>
+                  this.props.appState.setIsImportAreaDisplayed(!this.props.appState.isImportAreaDisplayed)
+                }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-download"></i>
                 </span>
@@ -157,7 +152,7 @@ class App extends React.Component<Props, any> {
                      return
                    }
 
-                   const shouldDelete = await DialogHelper.askDialog('Status löschen', 'Status wirklisch löschen? Dadurch werden alle gespeicherten Informationn gelöscht')
+                   const shouldDelete = await DialogHelper.askDialog('Status löschen', 'Status wirklisch löschen? Dadurch werden alle gespeicherten Informationn & Serien gelöscht')
 
                    if (shouldDelete) {
                      this.props.appState.clearSavedState()

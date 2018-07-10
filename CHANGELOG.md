@@ -1,6 +1,17 @@
 # Changelog
 
 
+- split the series list into marked and not marked ones
+- new series are automatically added at fron/top
+- made the add series list more fuzzy (remove all before the actual url)
+- remove all the auto saving state stuff
+  - only on added series, check series, import
+- we changed the series list
+  - we use it now as import (additive)
+- added button normalize the list manually
+- we now remove duplicates from the input list automatically
+- removed unused season, episode urls
+  - episode urls change if we have a ger translation
 - added mark series feature
   - marked series are displayed first (after all filters are applied)
 - added last queried display

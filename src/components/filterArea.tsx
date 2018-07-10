@@ -58,25 +58,6 @@ class FilterArea extends React.Component<Props, any> {
               <label htmlFor={'show-only-new-cb'}>Zeige nur geänderte</label>
             </div>
 
-            <div className="field">
-              <input className="is-checkradio" type="checkbox"
-                     id={'show-new-series-first'}
-                     checked={this.props.appState.invertSeriesOrder}
-                     onChange={(e) => {
-                       //console.log(arguments)
-                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
-                       this.props.appState.setInvertSeriesOrder(val)
-                     }}
-              />
-              <label htmlFor={'show-new-series-first'}>
-                <span>Kehre Reihenfolge der Serien um (siehe Liste)</span>
-                <span className="icon has-text-info tooltip is-tooltip-multiline"
-                      data-tooltip="Das ist praktisch, wenn man die Liste der Serien Schritt für Schritt erweitert und neue Serien unten an die Liste anfügt">
-                <i className="fas fa-info-circle"/>
-              </span>
-              </label>
-            </div>
-
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import {Normalizer} from "../helpers/normalizer";
 import {Capture} from "../helpers/capture";
 import {SeriesComparer} from "../helpers/seriesComparer";
 import {ExportAppState, FrontendManager} from "../helpers/frontendManager";
+import {DialogHelper} from "../helpers/dialogHelper";
 
 const ReactNotifications = require('react-notifications/dist/react-notifications')
 
@@ -11,12 +12,12 @@ export class AppState {
   /**
    * not normalized
    * e.g. https://bs.to/serie/The-Asterisk-War/1
-   * @type {any[]}
+   * this is only used to add new series
    */
-  @observable seriesUrlsText: string =
+  @observable addSeriesUrlsText: string =
     ``
 
-  @observable isLoaderDisplayed: boolean = false
+  @observable isLoaderDisplayed = false
 
   @observable isInputAreaDisplayed = false
 
@@ -24,7 +25,8 @@ export class AppState {
 
   @observable searchText = ''
 
-  @observable seriesBaseUrls: string[] = []
+  @observable currentProgressVal = 0
+  @observable maxProgressVal = 0
 
   @observable isExportAreaDisplayed = false
   @observable isImportAreaDisplayed = false
@@ -37,37 +39,34 @@ export class AppState {
 
   @observable showOnlyChangedSeries = false
 
-  @observable invertSeriesOrder = true
-
-  /**
-   * matches seriesBaseUrls length to indicate the progress
-   * @type {number}
-   */
-  @observable progressCount = 0
-
 
   //--- computed
 
   @computed
-  get captureProgress(): number {
-    return this.progressCount * 100 / this.seriesBaseUrls.length
+  get exportSeriesList(): string {
+    return this.series.map(p => p.baseUrl).join('\n')
   }
 
-
   //--- actions
+
+
+  @action
+  refreshExportStateString() {
+    FrontendManager.setStateString(this.series)
+    this.exportString = FrontendManager.lastStateString
+    this.exportStringSizeString = FrontendManager.lastStateStringSizeString
+  }
+
+  @action
+  deleteSeries(series: Series) {
+
+    const index = this.series.indexOf(series)
+    this.series.splice(index, 1)
+  }
 
   @action
   setSeriesIsMarked(series: Series, isMarked: boolean) {
     series.isMarked = isMarked
-    this.writeState()
-  }
-
-  @action
-  setSeriesListFromSeries() {
-
-    if (this.series.length === 0) return
-
-    this.seriesUrlsText = this.series.map(p => p.baseUrl).join('\n')
   }
 
   @action
@@ -88,7 +87,6 @@ export class AppState {
         return
       }
       this.series = state.series
-      this.seriesUrlsText = state.seriesList
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnten nicht importiert werden')
@@ -99,10 +97,6 @@ export class AppState {
     this.writeState()
   }
 
-  @action
-  setInvertSeriesOrder(showNewSeriesFirst: boolean) {
-    this.invertSeriesOrder = showNewSeriesFirst
-  }
 
   @action
   setShowOnlyChangedSeries(showOnlyChangedSeries: boolean) {
@@ -112,21 +106,69 @@ export class AppState {
   @action
   setIsInputAreaDisplayed(isDisplayed: boolean) {
     this.isInputAreaDisplayed = isDisplayed
+
+    if (isDisplayed === true) {
+      // this.isInputAreaDisplayed = false
+      this.isFilterAreaDisplayed = false
+      this.isExportAreaDisplayed = false
+      this.isImportAreaDisplayed = false
+    }
   }
 
   @action
   setIsFilterAreaDisplayed(isDisplayed: boolean) {
     this.isFilterAreaDisplayed = isDisplayed
+
+    if (isDisplayed === true) {
+      this.isInputAreaDisplayed = false
+      // this.isFilterAreaDisplayed = false
+      this.isExportAreaDisplayed = false
+      this.isImportAreaDisplayed = false
+    }
   }
 
   @action
   setIsExportAreaDisplayed(isDisplayed: boolean) {
     this.isExportAreaDisplayed = isDisplayed
+
+    if (isDisplayed === true) {
+      this.isInputAreaDisplayed = false
+      this.isFilterAreaDisplayed = false
+      // this.isExportAreaDisplayed = false
+      this.isImportAreaDisplayed = false
+
+      this.refreshExportStateString()
+    }
+    else {
+      this.exportString = ''
+      this.exportStringSizeString = ''
+    }
   }
 
   @action
   setIsImportAreaDisplayed(isDisplayed: boolean) {
     this.isImportAreaDisplayed = isDisplayed
+
+    if (isDisplayed === true) {
+      this.isInputAreaDisplayed = false
+      this.isFilterAreaDisplayed = false
+      this.isExportAreaDisplayed = false
+      // this.isImportAreaDisplayed = false
+    }
+  }
+
+  @action
+  setIsLoaderDisplayed(isDisplayed: boolean) {
+    this.isLoaderDisplayed = isDisplayed
+
+    if (isDisplayed) {
+      //make sure all is collapsed
+      this.setIsInputAreaDisplayed(false)
+      this.setIsImportAreaDisplayed(false)
+      this.setIsExportAreaDisplayed(false)
+      this.setIsFilterAreaDisplayed(false)
+
+    }
   }
 
   @action
@@ -134,9 +176,10 @@ export class AppState {
 
     try {
       await FrontendManager.clearSeries()
+      this.series = []
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnten gelöscht werden')
+      ReactNotifications.NotificationManager.error('Status konnte nicht gelöscht werden')
       return
     }
 
@@ -151,12 +194,7 @@ export class AppState {
 
   @action
   updateSeriesUrlsText(text: string) {
-    this.seriesUrlsText = text
-  }
-
-  @action
-  setIsLoaderDisplayed(isDisplayed: boolean) {
-    this.isLoaderDisplayed = isDisplayed
+    this.addSeriesUrlsText = text
   }
 
   @action
@@ -171,37 +209,112 @@ export class AppState {
       }
     }
 
-    this.writeState()
   }
 
 
   @action
-  async captureBsState() {
+  async getNewSeriesInitialState() {
 
-    this.parseSeriesUrls()
+    const seriesBaseUrls = this.parseSeriesUrls(this.addSeriesUrlsText)
 
-    this.updateCaptureProgress(0)
-    this.isLoaderDisplayed = true
+    const oldSeriesBaseUrls = this.series.map(p => p.baseUrl)
+
+    const newSeriesBaseUrls: string[] = []
+
+    for (const url of seriesBaseUrls) {
+      if (oldSeriesBaseUrls.indexOf(url) !== -1) continue
+      newSeriesBaseUrls.push(url)
+    }
+
+    if (newSeriesBaseUrls.length === 0) {
+      return
+    }
 
     let series: Series[] = []
+    let seriesFinishedCount = 0
+
+    this.maxProgressVal = newSeriesBaseUrls.length
+    this.currentProgressVal = 0
+    this.setIsLoaderDisplayed(true)
+
 
     try {
-      series = await Capture.capture(this.seriesBaseUrls, (numCaptured) => {
 
+      series = await
+        Capture.capture(newSeriesBaseUrls, numFinished => {
+          seriesFinishedCount = numFinished
+          runInAction(() => {
+            this.currentProgressVal = numFinished
+          })
+        })
+
+    } catch (err) {
+      console.error(err)
+      const errorSeriesBaseUrl = newSeriesBaseUrls[seriesFinishedCount - 1]
+      DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
+
+      setTimeout(() => {
         runInAction(() => {
-          this.updateCaptureProgress(numCaptured)
+          this.setIsLoaderDisplayed(false)
+          this.updateSeriesUrlsText('')
+        })
+      }, 500)
+
+
+      return
+    }
+
+    setTimeout(() => {
+      runInAction(() => {
+        // this.series.push(...series)
+        //add new at top
+        this.series = series.concat(this.series)
+        this.setIsLoaderDisplayed(false)
+        this.writeState()
+        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt`)
+      })
+    }, 500)
+
+
+  }
+
+  /**
+   * checks all series we got for changes
+   * @returns {Promise<void>}
+   */
+  @action
+  async captureBsStateFromOld() {
+
+
+    let series: Series[] = []
+    let seriesBaseUrls = this.series.map(p => p.baseUrl)
+    let seriesFinishedCount = 0
+
+    if (seriesBaseUrls.length === 0) {
+      return
+    }
+
+    this.maxProgressVal = seriesBaseUrls.length
+    this.currentProgressVal = 0
+    this.setIsLoaderDisplayed(true)
+
+    try {
+      series = await Capture.capture(seriesBaseUrls, (numFinished) => {
+        seriesFinishedCount = numFinished
+        runInAction(() => {
+          this.currentProgressVal = numFinished
         })
       })
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Daten konnten nicht abgerufen werden')
+      const errorSeriesBaseUrl = seriesBaseUrls[seriesFinishedCount - 1]
+      DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
 
       setTimeout(() => {
         runInAction(() => {
-          this.isLoaderDisplayed = false
+          this.setIsLoaderDisplayed(false)
         })
       }, 1000)
-
 
       return
     }
@@ -209,11 +322,9 @@ export class AppState {
 
     setTimeout(() => {
       runInAction(() => {
+
         this.oldSeries = this.series
         this.series = series
-
-        //normalize the list after we got the series
-        this.setSeriesListFromSeries()
 
         this.compareSeries()
 
@@ -228,9 +339,8 @@ export class AppState {
 
     try {
 
-      const seriesUrls = this.seriesUrlsText.trim() === '' ? this.series.map(p => p.baseUrl).join('\n') : this.seriesUrlsText
 
-      await FrontendManager.writeSeries(this.series, seriesUrls)
+      await FrontendManager.writeSeries(this.series)
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnte nicht gespeichert werden')
@@ -239,10 +349,7 @@ export class AppState {
 
     runInAction(() => {
 
-      this.exportString = FrontendManager.lastStateString
-      this.exportStringSizeString = FrontendManager.lastStateStringSizeString
-      this.isLoaderDisplayed = false
-
+      this.setIsLoaderDisplayed(false)
 
       ReactNotifications.NotificationManager.success('Status gespeichert', '', 1500)
 
@@ -270,7 +377,7 @@ export class AppState {
       lastState = await FrontendManager.readSeries()
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnten nicht geladen werden')
+      ReactNotifications.NotificationManager.error('Status konnte nicht geladen werden')
       return
     }
 
@@ -280,9 +387,6 @@ export class AppState {
     }
 
     runInAction(() => {
-      this.exportString = FrontendManager.lastStateString
-      this.exportStringSizeString = FrontendManager.lastStateStringSizeString
-      this.seriesUrlsText = (lastState as ExportAppState).seriesList
       this.series = (lastState as ExportAppState).series
       console.log(`loaded old series (${this.series.length})`)
     })
@@ -298,13 +402,6 @@ export class AppState {
       episode.watchedGer = watched
     }
 
-    this.writeState()
-
-  }
-
-  @action
-  updateCaptureProgress(numCaptured: number): void {
-    this.progressCount = numCaptured
   }
 
 
@@ -313,12 +410,11 @@ export class AppState {
 
     if (season === null) {
       series.selectedSeasonId = null
-      this.writeState()
+
       return
     }
 
     series.selectedSeasonId = season.seasonId
-    this.writeState()
   }
 
   /**
@@ -340,13 +436,30 @@ export class AppState {
    * @param {boolean} excludeSpecials
    * @returns {boolean}
    */
-  getWatchedAll(series: Series, eng: boolean, excludeSpecials = true): boolean {
+  getHasWatchedAll(series: Series, eng: boolean, excludeSpecials = true): boolean {
 
     for (const season of series.seasons) {
 
       if (excludeSpecials && season.seasonId === '0') {
         continue
       }
+
+      if (eng) {
+        const allEmpty = season.episodes.every(p => p.name_en === '')
+        //if nothing is there we cannot have watched it...
+        if (allEmpty) {
+          return false
+        }
+
+      }
+      else {
+        const allEmpty = season.episodes.every(p => p.name_ger === null)
+        //if nothing is there we cannot have watched it...
+        if (allEmpty) {
+          return false
+        }
+      }
+
 
       for (const episode of season.episodes) {
 
@@ -355,6 +468,12 @@ export class AppState {
         }
 
         if (!eng && episode.watchedGer === false) {
+
+          if (episode.name_ger === null) {
+            //ger is not yet reads so this is ok
+            continue
+          }
+
           return false
         }
 
@@ -397,9 +516,10 @@ export class AppState {
 
   //--- helpers
 
-  parseSeriesUrls() {
-    this.seriesBaseUrls = []
-    const lines = this.seriesUrlsText.split('\n')
+  parseSeriesUrls(urls: string): string[] {
+    let seriesBaseUrls = []
+    const lines = urls.split('\n')
+
 
     for (const line of lines) {
 
@@ -407,12 +527,14 @@ export class AppState {
 
       const baseUrl = Normalizer.normalizeBsUrl(line)
       if (baseUrl === null) {
-        //TODO
-        throw new Error()
+        DialogHelper.error('', `Konnte Base-Url nicht erstellen von '${line}'`)
+        throw new Error(`could not get base url from ${line}`)
       }
 
-      this.seriesBaseUrls.push(baseUrl)
+      seriesBaseUrls.push(baseUrl)
     }
+
+    return seriesBaseUrls
   }
 
   /**

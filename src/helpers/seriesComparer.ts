@@ -1,3 +1,5 @@
+import {DialogHelper} from "./dialogHelper";
+
 export class SeriesComparer {
 
 
@@ -25,9 +27,12 @@ export class SeriesComparer {
    * @param {Series[]} oldSeries
    * @param {Series[]} series
    * @param {Series[]} removedSeries out param for the series that were removed from the (new) series compared to the old ones
+   * @param showNotifications
    */
-  public static compareSeries(oldSeries: Series[], series: Series[], removedSeries: Series[]): void {
+  public static compareSeries(oldSeries: Series[], series: Series[], removedSeries: Series[], showNotifications: boolean = true): void {
 
+
+    let numHasSomethingNew = 0
 
     let alreadyComparedSeriesUrls: string[] = []
 
@@ -48,7 +53,11 @@ export class SeriesComparer {
       newSingleSeries.state = oldSingleSeries.state
       newSingleSeries.isMarked = oldSingleSeries.isMarked
 
-      this.compareSingleSeries(oldSingleSeries, newSingleSeries)
+      const res = this.compareSingleSeries(oldSingleSeries, newSingleSeries)
+
+      if (res.hasSomethingNew) {
+        numHasSomethingNew++
+      }
     }
 
     //mark all new series
@@ -58,6 +67,18 @@ export class SeriesComparer {
 
       //this was not in the old series...
       singleSeries.state = 'new'
+    }
+
+    if (showNotifications) {
+
+      if (numHasSomethingNew > 0) {
+        DialogHelper.show('Neuigkeiten', `Es gibt ${numHasSomethingNew} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden`)
+      }
+      else {
+        DialogHelper.show('','Keine Neuigkeiten')
+      }
+
+
     }
 
   }
@@ -73,13 +94,17 @@ export class SeriesComparer {
    * @param {Series} oldSeries
    * @param {Series} series
    */
-  private static compareSingleSeries(oldSeries: Series, series: Series): void {
+  private static compareSingleSeries(oldSeries: Series, series: Series): { hasSomethingNew: boolean } {
+
+    let hasSomethingNew = false
 
     //iterate new seasons
     for (let i = oldSeries.seasons.length; i < series.seasons.length; i++) {
 
+      hasSomethingNew = true
+
       // if (series.seasons[i].episodes.length > 0) {
-        series.seasons[i].state = 'new'
+      series.seasons[i].state = 'new'
       // }
 
 
@@ -109,6 +134,8 @@ export class SeriesComparer {
       for (let j = oldSeason.episodes.length; j < season.episodes.length; j++) {
         const episode = season.episodes[j]
 
+        hasSomethingNew = true
+
         if (episode.name_ger !== null) {
           episode.state = "newAndGer"
         }
@@ -134,6 +161,8 @@ export class SeriesComparer {
         if (oldEpisode.name_ger === null && episode.name_ger !== null) {
           episode.state = 'gerAdded'
 
+          hasSomethingNew = true
+
           //also mark the parent (season)
           season.state = "new"
           continue
@@ -145,6 +174,9 @@ export class SeriesComparer {
 
     }
 
+    return {
+      hasSomethingNew
+    }
 
   }
 }

@@ -20,3 +20,11 @@ workflow
 
 
 - create readme
+- anzeige, wenn angefangen zu deu aber noch nicht fertig (danach sortieren?)
+- add abort??
+- tooltip bei liste bearbeiten, dass das input liste ist und diese abgerufen wird, nicht die gespeicherten serien!!
+  - z.b. man löscht alles außer 1 --> alle anderen werden gelöscht
+- beim capturen alles einklappen...
+- auto scroll to bottom input list (on render?)
+- input list add only new??
+- kein implizit save (nur bei prüfen)

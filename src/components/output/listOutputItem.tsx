@@ -2,6 +2,7 @@ import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../../state/appState";
 import {ChangeEvent} from "react";
+import {DialogHelper} from "../../helpers/dialogHelper";
 
 
 interface Props {
@@ -20,6 +21,25 @@ class ListOutputItem extends React.Component<Props, any> {
       <div>
 
         <div className="box has-ribbon">
+
+          <div className="top-left-box-button">
+             <span className="icon  has-text-danger clickable tooltip is-tooltip-right series-marker"
+                   data-tooltip="Löscht die Serie und alle verbundenen Daten"
+                   onClick={async () => {
+
+                     const shouldDelete = await DialogHelper.askDialog('Serie löschen', 'Solle die Serie und alle verbunden Daten wirklich gelöscht werden?')
+
+
+                     if (!shouldDelete) {
+                         return
+                     }
+
+                     this.props.state.deleteSeries(this.props.series)
+                   }}
+             >
+              <i className="fas fa-trash"></i>
+            </span>
+          </div>
 
           <div className="top-right-box-button">
 
@@ -96,7 +116,7 @@ class ListOutputItem extends React.Component<Props, any> {
               </div>
 
               {
-                this.props.state.getWatchedAll(this.props.series, false) &&
+                this.props.state.getHasWatchedAll(this.props.series, false) &&
                 <div className="seen-all-ribbon">
                   <span className="icon icon-margin">
                     <i className="fas fa-glasses"></i>
@@ -108,7 +128,7 @@ class ListOutputItem extends React.Component<Props, any> {
               }
 
               {
-                this.props.state.getWatchedAll(this.props.series, true) &&
+                this.props.state.getHasWatchedAll(this.props.series, true) &&
                 <div className="seen-all-ribbon eng">
                   <span className="icon icon-margin">
                     <i className="fas fa-glasses"></i>

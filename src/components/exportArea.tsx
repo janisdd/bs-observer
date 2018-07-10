@@ -19,10 +19,12 @@ class ExportArea extends React.Component<Props, any> {
       <div className="input-area">
 
 
+        <h4 className="title is-4">Status</h4>
+
         <span className="icon has-text-info icon-margin clickable"
         onClick={() => {
 
-          const copyText = document.getElementById("exportTextArea") as HTMLTextAreaElement;
+          const copyText = document.getElementById("exportTextAreaState") as HTMLTextAreaElement;
           copyText.select();
           document.execCommand("copy");
 
@@ -36,8 +38,26 @@ class ExportArea extends React.Component<Props, any> {
           }
         </span>
 
-        <textarea id="exportTextArea" className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}
+        <textarea id="exportTextAreaState" className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}
                   value={this.props.appState.exportString} readOnly
+        ></textarea>
+
+
+
+        <h4 className="title is-4">Base-Url Liste</h4>
+
+        <span className="icon has-text-info icon-margin clickable"
+              onClick={() => {
+
+                const copyText = document.getElementById("exportTextAreaSeriesList") as HTMLTextAreaElement;
+                copyText.select();
+                document.execCommand("copy");
+
+              }}>
+            <i className="far fg-lg fa-clipboard"></i>
+        </span>
+        <textarea id="exportTextAreaSeriesList" className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}
+                  value={this.props.appState.exportSeriesList} readOnly
         ></textarea>
 
 

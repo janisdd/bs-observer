@@ -26,7 +26,6 @@ const oneEmptySeasonSeries: () => Series = () => {
         seasonId: '0',
         episodes: [],
         state: null,
-        url: ''
       }
     ],
     lastQueriedAt: new Date(),
@@ -49,13 +48,11 @@ const oneEpisodeOneSeasonSeries: () => Series = () => {
             watchedGer: false,
             watchedEng: false,
             state: null,
-            url: '',
             name_ger: null,
             name_en: ''
           }
         ],
         state: null,
-        url: ''
       }
     ],
     lastQueriedAt: new Date(),
@@ -78,13 +75,11 @@ const oneEpisodeWithGerOneSeasonSeries: () => Series = () => {
             watchedGer: false,
             watchedEng: false,
             state: null,
-            url: '',
             name_ger: '',
             name_en: ''
           }
         ],
         state: null,
-        url: ''
       }
     ],
     lastQueriedAt: new Date(),
@@ -100,7 +95,7 @@ describe('comparer tests', () => {
     const newSeries: Series[] = []
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(removedSeries).toEqual([])
   })
@@ -114,7 +109,7 @@ describe('comparer tests', () => {
     const newSeries: Series[] = []
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(removedSeries.length).toEqual(1)
     expect(removedSeries[0]).toEqual(seriesCopy)
@@ -128,7 +123,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual('new')
     expect(removedSeries).toEqual([])
@@ -144,7 +139,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual('new')
     expect(removedSeries).toEqual([])
@@ -160,7 +155,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual('new')
     expect(newSeries[0].seasons[0].episodes[0].state).toEqual('new')
@@ -177,7 +172,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual('new')
     expect(newSeries[0].seasons[0].episodes[0].state).toEqual('newAndGer')
@@ -195,7 +190,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].episodes[0].state).toEqual(null)
@@ -212,7 +207,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].episodes[0].state).toEqual(null)
@@ -230,7 +225,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].seasons[0].state).toEqual('new')
     expect(newSeries[0].seasons[0].episodes[0].state).toEqual('gerAdded')
@@ -249,7 +244,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual('new')
     expect(removedSeries).toEqual([])
@@ -275,7 +270,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].state).toEqual('new')
@@ -308,7 +303,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].state).toEqual(null)
@@ -341,7 +336,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].state).toEqual('new')
@@ -374,7 +369,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].state).toEqual('new')
@@ -407,7 +402,7 @@ describe('comparer tests', () => {
     ]
 
     const removedSeries: Series[] = []
-    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries)
+    SeriesComparer.compareSeries(oldSeries, newSeries, removedSeries, false)
 
     expect(newSeries[0].state).toEqual(null)
     expect(newSeries[0].seasons[0].state).toEqual('new')

@@ -17,7 +17,25 @@ export class FrontendManager {
 
   }
 
-  public static writeSeries(series: Series[], seriesList: string): Promise<void> {
+  public static setStateString(series: Series[]): void {
+
+    const state: ExportAppState = {
+      version: appVersion,
+      series: series,
+    }
+
+    const stateString = JSON.stringify(state)
+
+    // console.log(stateString)
+
+    const lengthInBytes = (new (TextEncoder as any)('utf-8').encode(stateString)).length
+    this.lastStateString = stateString
+    this.lastStateStringSizeString = this.humanFileSize(lengthInBytes)
+
+    console.log(`stat is ${lengthInBytes} bytes long --> ${this.lastStateStringSizeString}`)
+  }
+
+  public static writeSeries(series: Series[]): Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
       const copySeries: Series[] = series
@@ -60,12 +78,11 @@ export class FrontendManager {
       const state: ExportAppState = {
         version: appVersion,
         series: copySeries,
-        seriesList
       }
 
       const stateString = JSON.stringify(state)
 
-      console.log(stateString)
+      // console.log(stateString)
 
       const lengthInBytes = (new (TextEncoder as any)('utf-8').encode(stateString)).length
       this.lastStateString = stateString
@@ -153,8 +170,6 @@ export interface ExportAppState {
 
   version: string
   series: Series[]
-  seriesList: string
-
 }
 
 //from https://weblog.west-wind.com/posts/2014/Jan/06/JavaScript-JSON-Date-Parsing-and-real-Dates

@@ -42,10 +42,6 @@ class ListOutputArea extends React.Component<Props, any> {
 
     let series = this.props.appState.series
 
-    if (this.props.appState.invertSeriesOrder) {
-      series = series.slice().reverse()
-    }
-
     if (this.props.appState.showOnlyChangedSeries) {
       series = series.filter(p => this.props.appState.getHasSeriesSomethingNew(p))
     }
@@ -56,21 +52,15 @@ class ListOutputArea extends React.Component<Props, any> {
 
     //then display marked first
 
-    series = series.sort((a, b) => {
-      if (a.isMarked && !b.isMarked) {
-        return -1
-      }
-      else if (!a.isMarked && b.isMarked) {
-        return 1
-      }
-
-      return 0
-    })
+    const markedSeries = series.filter(p => p.isMarked)
+    const notMarkedSeries = series.filter(p => !p.isMarked)
 
     return (
       <div>
 
-        <div className="series-list">
+        <div className="series-count">{this.props.appState.series.length} Serie(n) insgesamt</div>
+
+        <div>
           {
             this.props.appState.isLoaderDisplayed &&
             <div style={{padding: '3em', width: '100%'}}>
@@ -79,21 +69,64 @@ class ListOutputArea extends React.Component<Props, any> {
                   <div id="loader"/>
                 </div>
               </div>
-              <progress className="progress is-success" value={this.props.appState.captureProgress} max="100"/>
+              <progress className="progress is-success"
+                        value={this.props.appState.currentProgressVal * 100 / this.props.appState.maxProgressVal}
+                        max="100"/>
+
+              <div style={{textAlign: 'center'}}>
+                {
+                  this.props.appState.currentProgressVal
+                }
+                /
+                {
+                  this.props.appState.maxProgressVal
+                }
+              </div>
+
             </div>
           }
 
 
           {
-            this.props.appState.isLoaderDisplayed === false && this.props.appState.series.length > 0 &&
-            series.map((value, index) => {
-              return (
-                <div className="list-element" key={value.baseUrl}>
-                  <ListOutputItem state={this.props.appState} series={value}/>
-                </div>
-              )
-            })
+            this.props.appState.isLoaderDisplayed === false && markedSeries.length > 0 &&
+            <div>
+              <h1 className="series-list-title">Markierte Serien</h1>
+              <div className="series-list">
+                {
+                  markedSeries.map((value, index) => {
+                    return (
+                      <div className="list-element" key={value.baseUrl}>
+                        <ListOutputItem state={this.props.appState} series={value}/>
+                      </div>
+                    )
+                  })
+                }
+              </div>
+            </div>
+          }
 
+          {
+            markedSeries.length > 0 && notMarkedSeries.length > 0 &&
+            <div className="is-divider"></div>
+          }
+
+          {
+            this.props.appState.isLoaderDisplayed === false && notMarkedSeries.length > 0 &&
+            <div>
+              <h1 className="series-list-title">Andere Serien</h1>
+
+              <div className="series-list">
+                {
+                  notMarkedSeries.map((value, index) => {
+                    return (
+                      <div className="list-element" key={value.baseUrl}>
+                        <ListOutputItem state={this.props.appState} series={value}/>
+                      </div>
+                    )
+                  })
+                }
+              </div>
+            </div>
           }
 
         </div>

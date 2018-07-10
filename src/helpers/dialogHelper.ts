@@ -14,8 +14,8 @@ export class DialogHelper {
       showConfirmButton: true,
       showCloseButton: false,
       showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
+      confirmButtonText: 'Ja',
+      cancelButtonText: 'Nein',
       allowOutsideClick: false,
       allowEnterKey: true,
     }
@@ -26,7 +26,48 @@ export class DialogHelper {
           resolve(result.value as boolean)
         })
     })
+  }
 
+  public static error(title: string, message: string): Promise<void> {
+    const options: SweetAlertOptions = {
+      title: title,
+      text: message,
+      type: translateDialogType(DialogType.error),
+      showConfirmButton: true,
+      showCloseButton: false,
+      showCancelButton: false,
+      confirmButtonText: 'Ok',
+      allowOutsideClick: false,
+      allowEnterKey: true,
+    }
+
+    return new Promise<void>((resolve) => {
+      Swal(options)
+        .then((result) => {
+          resolve()
+        })
+    })
+  }
+
+  public static show(title: string, message: string): Promise<void> {
+    const options: SweetAlertOptions = {
+      title: title,
+      text: message,
+      type: translateDialogType(DialogType.info),
+      showConfirmButton: true,
+      showCloseButton: false,
+      showCancelButton: false,
+      confirmButtonText: 'Ok',
+      allowOutsideClick: false,
+      allowEnterKey: true,
+    }
+
+    return new Promise<void>((resolve) => {
+      Swal(options)
+        .then((result) => {
+          resolve()
+        })
+    })
   }
 }
 

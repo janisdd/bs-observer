@@ -3,8 +3,6 @@ import axios from 'axios'
 export class Capture {
   public static async capture(baseUrls: string[], onOneCaptureFinished: (numFinished: number) => void): Promise<Series[]> {
 
-    console.log('Start')
-
     const now = new Date()
     const series: Series[] = []
 
@@ -12,10 +10,10 @@ export class Capture {
     //
     for (const baseUrl of baseUrls) {
       // promises.push(this.getSeriesState(baseUrl))
-
       try {
         const _series = await this.getSeriesState(baseUrl, now)
         series.push(_series)
+        console.log('finished capture for: ' + baseUrl)
         onOneCaptureFinished(series.length)
       } catch (err) {
         throw err
@@ -71,24 +69,29 @@ export class Capture {
       isMarked: false
     }
 
+    let seasonUrls: string[] = []
+
     while ((node = result.iterateNext()) !== null) {
       const el = node as HTMLAnchorElement
       series.seasons.push({
         episodes: [],
-        url: el.href, //e.g. https://bs.to/serie/Sword-Art-Online/1
+        //url: el.href, //e.g. https://bs.to/serie/Sword-Art-Online/1
         seasonId: el.href.substr(el.href.lastIndexOf('/') + 1),
         state: null
       })
+      seasonUrls.push(el.href)
     }
 
-    for (const season of series.seasons) {
+    for (let i = 0; i < series.seasons.length; i++) {
+      const season = series.seasons[i]
+      const seasonUrl = seasonUrls[i]
 
-      response = await axios.get<string>(season.url, {
+      response = await axios.get<string>(seasonUrl, {
         responseType: 'document'
       })
 
       if (response.status !== 200) {
-        throw new Error(`could not get series '${series.baseUrl}' season ${season.url}, status code: ${response.status}`)
+        throw new Error(`could not get series '${series.baseUrl}' season ${seasonUrl}, status code: ${response.status}`)
       }
 
       let document = response.data as any as Document//parser.parseFromString(response.data, 'text/html')
@@ -101,10 +104,32 @@ export class Capture {
 
         const nameEls = el.children
 
+
+        let gerName: string | null = null
+        let engName = ''
+
+        if (nameEls.length === 1) {
+
+          if (nameEls[0].tagName.toLowerCase() === 'strong') {
+            gerName = (nameEls[0] as HTMLElement).innerText
+            engName = ''
+          }
+
+          if (nameEls[0].tagName.toLowerCase() === 'span') {
+            gerName = null
+            engName = (nameEls[0] as HTMLElement).innerText
+          }
+
+        }
+        else {
+          engName = nameEls.length === 1 ? (nameEls[0] as HTMLElement).innerText : (nameEls[1] as HTMLElement).innerText
+          gerName = nameEls.length === 1 ? null : (nameEls[0] as HTMLElement).innerText
+        }
+
         season.episodes.push({
-          url: el.href,
-          name_en: nameEls.length === 1 ? (nameEls[0] as HTMLElement).innerText : (nameEls[1] as HTMLElement).innerText,
-          name_ger: nameEls.length === 1 ? null : (nameEls[0] as HTMLElement).innerText,
+          //url: el.href,
+          name_en: engName,
+          name_ger: gerName,
           state: null,
           watchedGer: false,
           watchedEng: false

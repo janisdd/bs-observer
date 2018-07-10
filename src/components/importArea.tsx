@@ -34,7 +34,7 @@ class ImportArea extends React.Component<Props, any> {
 
         <br />
 
-        <a className="button is-primary"
+        <a className="button is-white"
            onClick={() => {
 
              this.props.appState.importStatus()

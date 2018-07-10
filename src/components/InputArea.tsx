@@ -2,6 +2,7 @@ import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
 import {ChangeEvent} from "react";
+import {DialogHelper} from "../helpers/dialogHelper";
 
 
 interface Props {
@@ -13,6 +14,17 @@ interface Props {
 class InputArea extends React.Component<Props, any> {
 
 
+  componentDidMount() {
+    //
+    // let textarea = document.getElementById('input-list-area');
+    //
+    // if (!textarea) {
+    //   throw new Error('TODO')
+    // }
+    // textarea.scrollTop = textarea.scrollHeight;
+
+  }
+
   updateInput(e: ChangeEvent<HTMLTextAreaElement>) {
     this.props.appState.updateSeriesUrlsText(e.currentTarget.value)
   }
@@ -23,29 +35,21 @@ class InputArea extends React.Component<Props, any> {
 
 
         <div>
-                <textarea className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}
-                          value={this.props.appState.seriesUrlsText}
+                <textarea id="input-list-area" className="textarea"
+                          style={{width: '500px', height: '200px', marginBottom: '1em'}}
+                          value={this.props.appState.addSeriesUrlsText}
                           onChange={(e) => this.updateInput(e)}
                 ></textarea>
 
-          <a className="button is-primary"
+          <a className="button is-white"
              onClick={() => {
 
-               this.props.appState.setSeriesListFromSeries()
+               this.props.appState.getNewSeriesInitialState()
 
              }}
           >
-            <span className="icon is-small">
-              <i className="fas fa-asterisk"></i>
-            </span>
-            <span>Erstelle Liste von Serien</span>
+            <span>Hinzufügen</span>
           </a>
-
-          {/*<a className="button is-primary"*/}
-             {/*onClick={async () => {*/}
-               {/*await this.props.appState.captureBsState()*/}
-             {/*}}*/}
-          {/*>Prüfen & Vergleichen</a>*/}
         </div>
 
 
