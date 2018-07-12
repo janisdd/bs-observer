@@ -1,6 +1,7 @@
 # Changelog
 
 
+- bookmark is now exactly on the border
 - [fixed] isse where delete status was not updating the ui because we used concat and changed the array reference?
 - [feature] added backup state so the user can go to the last state (in import view)
   - also works on delete state

@@ -31,7 +31,7 @@ class ListOutputItem extends React.Component<Props, any> {
 
 
                      if (!shouldDelete) {
-                         return
+                       return
                      }
 
                      this.props.state.deleteSeries(this.props.series)
@@ -51,7 +51,7 @@ class ListOutputItem extends React.Component<Props, any> {
                       this.props.state.setSeriesIsMarked(this.props.series, false)
                     }}
               >
-              <i className="fas fa-lg fa-bookmark"></i>
+              <i style={{marginTop: '-5px'}} className="fas fa-lg fa-bookmark"></i>
             </span>
             }
 
@@ -63,7 +63,7 @@ class ListOutputItem extends React.Component<Props, any> {
                       this.props.state.setSeriesIsMarked(this.props.series, true)
                     }}
               >
-              <i className="far fa-lg fa-bookmark"></i>
+              <i style={{marginTop: '-5px'}} className="far fa-lg fa-bookmark"></i>
             </span>
             }
 
