@@ -1,8 +1,12 @@
 # Changelog
 
 
+- [fixed] isse where delete status was not updating the ui because we used concat and changed the array reference?
+- [feature] added backup state so the user can go to the last state (in import view)
+  - also works on delete state
+- re-enabled auto save on import/add series, compare
 - split the series list into marked and not marked ones
-- new series are automatically added at fron/top
+- new series are automatically added at front/top
 - made the add series list more fuzzy (remove all before the actual url)
 - remove all the auto saving state stuff
   - only on added series, check series, import

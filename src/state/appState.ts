@@ -39,6 +39,8 @@ export class AppState {
 
   @observable showOnlyChangedSeries = false
 
+  @observable hasBackupState = false
+
 
   //--- computed
 
@@ -72,8 +74,8 @@ export class AppState {
   @action
   setImportString(text: string) {
     this.importString = text
-    const bytes = (new (TextEncoder as any)('utf-8').encode(text)).length
-    this.importStringSizeString = FrontendManager.humanFileSize(bytes)
+    // const bytes = (new (TextEncoder as any)('utf-8').encode(text)).length
+    // this.importStringSizeString = FrontendManager.humanFileSize(bytes)
   }
 
   @action
@@ -83,17 +85,19 @@ export class AppState {
       const state = FrontendManager.readStatusFromString(this.importString)
 
       if (!state) {
-        ReactNotifications.NotificationManager.error('Status konnten nicht importiert werden, war ungültig')
+        DialogHelper.error('Fehler', 'Status konnten nicht importiert werden, war ungültig')
         return
       }
       this.series = state.series
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnten nicht importiert werden')
+      DialogHelper.error('Fehler', 'Status konnten nicht importiert werden')
       return
     }
-    ReactNotifications.NotificationManager.success('Status wurde importiert', '', 3000)
+    DialogHelper.show('Importiert', 'Status wurde importiert')
     this.isImportAreaDisplayed = false
+
+    //maybe we imported the wrong one and want to rollback...? --> let the user manually save
     this.writeState()
   }
 
@@ -176,7 +180,10 @@ export class AppState {
 
     try {
       await FrontendManager.clearSeries()
-      this.series = []
+
+      runInAction(() => {
+        this.series = []
+      })
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnte nicht gelöscht werden')
@@ -268,9 +275,17 @@ export class AppState {
       runInAction(() => {
         // this.series.push(...series)
         //add new at top
-        this.series = series.concat(this.series)
+        let temp = this.series
+        this.series = series
+
+        for (const singleSeries of temp) {
+          this.series.push(singleSeries)
+        }
+
         this.setIsLoaderDisplayed(false)
+
         this.writeState()
+
         DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt`)
       })
     }, 500)
@@ -328,6 +343,7 @@ export class AppState {
 
         this.compareSeries()
 
+
         this.writeState()
 
       })
@@ -338,9 +354,8 @@ export class AppState {
   async writeState() {
 
     try {
-
-
       await FrontendManager.writeSeries(this.series)
+
     } catch (err) {
       console.error(err)
       ReactNotifications.NotificationManager.error('Status konnte nicht gespeichert werden')
@@ -349,10 +364,35 @@ export class AppState {
 
     runInAction(() => {
 
+      this.hasBackupState = FrontendManager.hasBackupState()
       this.setIsLoaderDisplayed(false)
 
       ReactNotifications.NotificationManager.success('Status gespeichert', '', 1500)
 
+    })
+  }
+
+  @action
+  async rollbackState() {
+
+    let lastState: ExportAppState | null = null
+
+    try {
+      lastState = await FrontendManager.readBackupState()
+    } catch (err) {
+      console.error(err)
+      ReactNotifications.NotificationManager.error('Backup-Status konnte nicht geladen werden')
+      return
+    }
+
+    if (lastState === null) {
+      //no last state do nothing
+      return
+    }
+
+    runInAction(() => {
+      this.series = (lastState as ExportAppState).series
+      console.log(`loaded backup state (${this.series.length})`)
     })
   }
 
@@ -381,12 +421,15 @@ export class AppState {
       return
     }
 
-    if (lastState === null) {
-      //no last state do nothing
-      return
-    }
 
     runInAction(() => {
+      this.hasBackupState = FrontendManager.hasBackupState()
+
+      if (lastState === null) {
+        //no last state do nothing
+        return
+      }
+
       this.series = (lastState as ExportAppState).series
       console.log(`loaded old series (${this.series.length})`)
     })

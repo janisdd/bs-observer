@@ -1,8 +1,9 @@
 import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
-import {ChangeEvent} from "react";
+import {ChangeEvent, FocusEventHandler} from "react";
 import _ = require("lodash");
+import {DialogHelper} from "../helpers/dialogHelper";
 
 
 interface Props {
@@ -17,14 +18,19 @@ class ImportArea extends React.Component<Props, any> {
     this.props.appState.setImportString(e.currentTarget.value)
   }
 
+  updateInput2(e: React.FocusEvent<HTMLTextAreaElement>) {
+    this.props.appState.setImportString(e.currentTarget.value)
+  }
+
   render(): JSX.Element {
     return (
       <div className="input-area">
 
 
         <textarea className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}
-                  value={this.props.appState.importString}
+
                   onChange={(e) => this.updateInput(e)}
+                  // onBlur={(e) => this.updateInput2(e)}
         ></textarea>
         <span>
           ~{
@@ -32,7 +38,7 @@ class ImportArea extends React.Component<Props, any> {
         }
         </span>
 
-        <br />
+        <br/>
 
         <a className="button is-white"
            onClick={() => {
@@ -43,6 +49,28 @@ class ImportArea extends React.Component<Props, any> {
         >
           Import Status
         </a>
+
+
+        {
+          this.props.appState.hasBackupState &&
+          <a className="button is-white"
+             onClick={async () => {
+
+               const shouldRollback = await DialogHelper.askDialog('Wiederherstellen', 'Soll wirklich der vorherige Zustand wiederhergestellt werden (vor dem letzten Speichern)?')
+
+               if (!shouldRollback) return
+
+               this.props.appState.rollbackState()
+
+             }}
+          >
+          <span className="icon">
+            <i className="fas fa-undo"></i>
+          </span>
+            <span>Vorherigen Status wiederverstellen</span>
+          </a>
+        }
+
 
       </div>
     )

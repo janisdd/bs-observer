@@ -3,6 +3,7 @@ import {appVersion} from "../constants";
 export class FrontendManager {
 
   private static readonly stateKey = 'series'
+  private static readonly stateBackupKey = 'backupState'
 
   public static lastStateString = ''
   public static lastStateStringSizeString = ''
@@ -10,7 +11,16 @@ export class FrontendManager {
 
   public static clearSeries(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
+
+      let oldState = localStorage.getItem(this.stateKey)
+
+      if (oldState !== null) {
+        localStorage.setItem(this.stateBackupKey, oldState)
+      }
+
       localStorage.removeItem(this.stateKey)
+      //in case the user wants to rollback
+
       resolve()
 
     })
@@ -90,10 +100,23 @@ export class FrontendManager {
 
       console.log(`stat is ${lengthInBytes} bytes long --> ${this.lastStateStringSizeString}`)
 
+
+      let lastKnownStage = localStorage.getItem(this.stateKey)
+
+      if (lastKnownStage !== null) {
+        //set the backup further first in case the real update was not wanted we can
+        //rollback
+        localStorage.setItem(this.stateBackupKey, lastKnownStage)
+      }
+
       localStorage.setItem(this.stateKey, stateString)
 
       resolve()
     })
+  }
+
+  public static hasBackupState(): boolean {
+    return localStorage.getItem(this.stateBackupKey) !== null
   }
 
   public static readSeries(): Promise<ExportAppState | null> {
@@ -101,6 +124,30 @@ export class FrontendManager {
     return new Promise<ExportAppState | null>((resolve, reject) => {
 
       const stateString = localStorage.getItem(this.stateKey)
+
+      if (!stateString) {
+
+        resolve(null)
+        return
+      }
+
+      const state = this.readStatusFromString(stateString)
+
+      if (!state) {
+        resolve(null)
+        return
+      }
+
+
+      resolve(state)
+    })
+  }
+
+  public static readBackupState(): Promise<ExportAppState | null> {
+
+    return new Promise<ExportAppState | null>((resolve, reject) => {
+
+      const stateString = localStorage.getItem(this.stateBackupKey)
 
       if (!stateString) {
 
@@ -175,6 +222,7 @@ export interface ExportAppState {
 //from https://weblog.west-wind.com/posts/2014/Jan/06/JavaScript-JSON-Date-Parsing-and-real-Dates
 const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
 const reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
+
 function dateTimeReviver(key: string, value: any) {
   if (typeof value === 'string') {
     var a = reISO.exec(value);
