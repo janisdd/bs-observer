@@ -32,7 +32,7 @@ class FilterArea extends React.Component<Props, any> {
                 //is-loading
               }
               <p className="control has-icons-left">
-                <input className="input" type="email" value={this.props.appState.searchText}
+                <input className="input" type="text" value={this.props.appState.searchText}
                        onChange={e => this.updateInput(e)}
                 />
                 <span className="icon is-small is-left">
@@ -56,6 +56,30 @@ class FilterArea extends React.Component<Props, any> {
                      }}
               />
               <label htmlFor={'show-only-new-cb'}>Zeige nur geänderte</label>
+            </div>
+
+            <div className="field">
+              <input className="is-checkradio" type="checkbox"
+                     id={'show-only-not-watched-ger'}
+                     checked={this.props.appState.showOnlyWatcherMissingGer}
+                     onChange={(e) => {
+                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       this.props.appState.setShowOnlyWatcherMissingGer(val)
+                     }}
+              />
+              <label htmlFor={'show-only-not-watched-ger'}>Zeige noch nicht alle gesehen deu</label>
+            </div>
+
+            <div className="field">
+              <input className="is-checkradio" type="checkbox"
+                     id={'show-only-not-watched-eng'}
+                     checked={this.props.appState.showOnlyWatcherMissingEng}
+                     onChange={(e) => {
+                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       this.props.appState.setShowOnlyWatcherMissingEng(val)
+                     }}
+              />
+              <label htmlFor={'show-only-not-watched-eng'}>Zeige noch nicht alle gesehen eng</label>
             </div>
 
           </div>

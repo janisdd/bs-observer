@@ -29,7 +29,16 @@ interface Series {
   //  * user then needs to set it manually to false (to indicate that it was noticed that something was new)
   //  */
   // preserveChanges: boolean
+  /**
+   * last date & time when we queried the series
+   */
   lastQueriedAt: Date
+
+  /**
+   * true: the series is finished and we don't expect it to get changes
+   * false: not
+   */
+  ignoreOnCompare: boolean
 
   /**
    * this is preserved across queries

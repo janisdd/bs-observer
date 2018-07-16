@@ -10,7 +10,8 @@ const noSeasonSeries: () => Series = () => {
     imgUrl: null,
     seasons: [],
     lastQueriedAt: new Date(),
-    isMarked: false
+    isMarked: false,
+    ignoreOnCompare: false
   }
 }
 
@@ -29,7 +30,8 @@ const oneEmptySeasonSeries: () => Series = () => {
       }
     ],
     lastQueriedAt: new Date(),
-    isMarked: false
+    isMarked: false,
+    ignoreOnCompare: false
   }
 }
 
@@ -56,7 +58,8 @@ const oneEpisodeOneSeasonSeries: () => Series = () => {
       }
     ],
     lastQueriedAt: new Date(),
-    isMarked: false
+    isMarked: false,
+    ignoreOnCompare: false
   }
 }
 
@@ -83,7 +86,8 @@ const oneEpisodeWithGerOneSeasonSeries: () => Series = () => {
       }
     ],
     lastQueriedAt: new Date(),
-    isMarked: false
+    isMarked: false,
+    ignoreOnCompare: false
   }
 }
 

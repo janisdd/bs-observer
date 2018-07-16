@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export class Capture {
-  public static async capture(baseUrls: string[], onOneCaptureFinished: (numFinished: number) => void): Promise<Series[]> {
+  public static async capture(baseUrls: string[], seriesToIgnore: Series[], onOneCaptureFinished: (numFinished: number) => void): Promise<Series[]> {
 
     const now = new Date()
     const series: Series[] = []
@@ -10,6 +10,16 @@ export class Capture {
     //
     for (const baseUrl of baseUrls) {
       // promises.push(this.getSeriesState(baseUrl))
+
+      const ignoredSeries = seriesToIgnore.find(p => p.baseUrl === baseUrl)
+
+      if (ignoredSeries) {
+        series.push(ignoredSeries)
+        console.log('ignored: ' + baseUrl)
+        onOneCaptureFinished(series.length)
+        continue
+      }
+
       try {
         const _series = await this.getSeriesState(baseUrl, now)
         series.push(_series)
@@ -66,7 +76,8 @@ export class Capture {
       selectedSeasonId: null,
       state: null,
       lastQueriedAt: new Date(queryDate.valueOf()), //to not keep a reference
-      isMarked: false
+      isMarked: false,
+      ignoreOnCompare: false
     }
 
     let seasonUrls: string[] = []

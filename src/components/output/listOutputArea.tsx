@@ -42,6 +42,14 @@ class ListOutputArea extends React.Component<Props, any> {
 
     let series = this.props.appState.series
 
+    if (this.props.appState.showOnlyWatcherMissingGer) {
+      series = series.filter(p => this.props.appState.getHasWatchedAll(p, false) === false)
+    }
+
+    if (this.props.appState.showOnlyWatcherMissingEng) {
+      series = series.filter(p => this.props.appState.getHasWatchedAll(p, true) === false)
+    }
+
     if (this.props.appState.showOnlyChangedSeries) {
       series = series.filter(p => this.props.appState.getHasSeriesSomethingNew(p))
     }
@@ -59,6 +67,11 @@ class ListOutputArea extends React.Component<Props, any> {
       <div>
 
         <div className="series-count">{this.props.appState.series.length} Serie(n) insgesamt</div>
+        {
+          series.length !== this.props.appState.series.length &&
+          <div className="series-count">{series.length} Serie(n) nach Filter</div>
+        }
+
 
         <div>
           {

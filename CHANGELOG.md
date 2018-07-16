@@ -1,6 +1,11 @@
 # Changelog
 
 
+- added ignore series option
+  - ignored during capture & compare
+- last updated icon can now be clicked to update manually
+- added filter to display only series where we haven't watched all ger/eng episodes
+- added label to display how many series are left after applying filters
 - bookmark is now exactly on the border
 - [fixed] isse where delete status was not updating the ui because we used concat and changed the array reference?
 - [feature] added backup state so the user can go to the last state (in import view)

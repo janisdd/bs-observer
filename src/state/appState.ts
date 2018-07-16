@@ -39,6 +39,9 @@ export class AppState {
 
   @observable showOnlyChangedSeries = false
 
+  @observable showOnlyWatcherMissingGer = false
+  @observable showOnlyWatcherMissingEng = false
+
   @observable hasBackupState = false
 
 
@@ -57,6 +60,11 @@ export class AppState {
     FrontendManager.setStateString(this.series)
     this.exportString = FrontendManager.lastStateString
     this.exportStringSizeString = FrontendManager.lastStateStringSizeString
+  }
+
+  @action
+  setSeriesIgnoreOnCompare(series: Series, ignoreOnCompare: boolean) {
+    series.ignoreOnCompare = ignoreOnCompare
   }
 
   @action
@@ -106,6 +114,17 @@ export class AppState {
   setShowOnlyChangedSeries(showOnlyChangedSeries: boolean) {
     this.showOnlyChangedSeries = showOnlyChangedSeries
   }
+
+  @action
+  setShowOnlyWatcherMissingGer(showOnlyWatcherMissingGer: boolean) {
+    this.showOnlyWatcherMissingGer = showOnlyWatcherMissingGer
+  }
+
+  @action
+  setShowOnlyWatcherMissingEng(showOnlyWatcherMissingEng: boolean) {
+    this.showOnlyWatcherMissingEng = showOnlyWatcherMissingEng
+  }
+
 
   @action
   setIsInputAreaDisplayed(isDisplayed: boolean) {
@@ -248,7 +267,7 @@ export class AppState {
     try {
 
       series = await
-        Capture.capture(newSeriesBaseUrls, numFinished => {
+        Capture.capture(newSeriesBaseUrls, [], numFinished => {
           seriesFinishedCount = numFinished
           runInAction(() => {
             this.currentProgressVal = numFinished
@@ -295,17 +314,23 @@ export class AppState {
 
   /**
    * checks all series we got for changes
+   * @param {Series[]} oldSeries
+   * @param {boolean} overwriteSeries true: the old series will replace the current series in the state (respect the ignore compare series),
+   * false: only compare the given and replace the series states of the given series ignore the ignore compare series (in case you want to update only a couple series)
    * @returns {Promise<void>}
    */
   @action
-  async captureBsStateFromOld() {
+  async captureBsStateFromOld(oldSeries: Series[], overwriteSeries: boolean) {
 
 
     let series: Series[] = []
-    let seriesBaseUrls = this.series.map(p => p.baseUrl)
+    let seriesBaseUrls = oldSeries.map(p => p.baseUrl)
     let seriesFinishedCount = 0
 
     if (seriesBaseUrls.length === 0) {
+
+      DialogHelper.show('', 'Nichts zu prüfen')
+
       return
     }
 
@@ -313,13 +338,17 @@ export class AppState {
     this.currentProgressVal = 0
     this.setIsLoaderDisplayed(true)
 
+    let seriesToIgnore = overwriteSeries ? oldSeries.filter(p => p.ignoreOnCompare === true) : []
+
     try {
-      series = await Capture.capture(seriesBaseUrls, (numFinished) => {
-        seriesFinishedCount = numFinished
-        runInAction(() => {
-          this.currentProgressVal = numFinished
+      series = await Capture.capture(seriesBaseUrls,
+        seriesToIgnore,
+        (numFinished) => {
+          seriesFinishedCount = numFinished
+          runInAction(() => {
+            this.currentProgressVal = numFinished
+          })
         })
-      })
     } catch (err) {
       console.error(err)
       const errorSeriesBaseUrl = seriesBaseUrls[seriesFinishedCount - 1]
@@ -338,17 +367,45 @@ export class AppState {
     setTimeout(() => {
       runInAction(() => {
 
-        this.oldSeries = this.series
-        this.series = series
+        if (overwriteSeries) {
 
-        this.compareSeries()
+          this.oldSeries = this.series
+          this.series = series
+
+          //compares the old and the current series and adds states to the current series
+          SeriesComparer.compareSeries(this.oldSeries, this.series, [])
+
+          this.writeState()
+
+        }
+        else {
+
+          oldSeries = this.series
+          const capturedSeries = series
+
+          //compares the old and the current series and adds states to the current series
+          SeriesComparer.compareSeries(oldSeries, capturedSeries, [])
 
 
-        this.writeState()
+          //then replace the updates series
+          for (const singleSeries of capturedSeries) {
+            const oldSingleSeriesIndex = this.series.findIndex(p => p.baseUrl === singleSeries.baseUrl)
+
+            if (oldSingleSeriesIndex === -1) {
+              DialogHelper.error('', `Konnte Daten von '${singleSeries.baseUrl}' mit aktuellem Zustand nicht vereinigen`)
+              return
+            }
+
+            this.series.splice(oldSingleSeriesIndex, 1, singleSeries)
+          }
+        }
+
+        this.setIsLoaderDisplayed(false)
 
       })
     }, 300)
   }
+
 
   @action
   async writeState() {
@@ -458,14 +515,6 @@ export class AppState {
     }
 
     series.selectedSeasonId = season.seasonId
-  }
-
-  /**
-   * compares the old and the current series and adds states to the current series
-   */
-  @action
-  compareSeries() {
-    SeriesComparer.compareSeries(this.oldSeries, this.series, [])
   }
 
 

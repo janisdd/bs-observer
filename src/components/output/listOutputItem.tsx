@@ -41,7 +41,33 @@ class ListOutputItem extends React.Component<Props, any> {
             </span>
           </div>
 
+
           <div className="top-right-box-button">
+
+            {
+              this.props.series.ignoreOnCompare &&
+              <span className="icon clickable tooltip ignore-series has-text-warning is-tooltip-multiline"
+                    data-tooltip="[Ein] Ignoriert die Serie beim Prüfen und Vergleichen. Manuell Prüfen ist möglich"
+                    onClick={() => {
+                      this.props.state.setSeriesIgnoreOnCompare(this.props.series, false)
+                    }}
+              >
+                <i className="fas fa-exclamation-circle"></i>
+              </span>
+            }
+
+            {
+              !this.props.series.ignoreOnCompare &&
+              <span className="icon clickable tooltip ignore-series is-tooltip-multiline"
+                    data-tooltip="[Aus] Ignoriert die Serie beim Prüfen und Vergleichen. Manuell Prüfen ist möglich"
+                    style={{color: '#a5a5a5'}}
+                    onClick={() => {
+                      this.props.state.setSeriesIgnoreOnCompare(this.props.series, true)
+                    }}
+              >
+                <i className="fas fa-exclamation-circle"></i>
+              </span>
+            }
 
             {
               this.props.series.isMarked &&
@@ -68,7 +94,12 @@ class ListOutputItem extends React.Component<Props, any> {
             }
 
             <a className={['button', 'is-white'].join(' ')}
-               onClick={() => {
+               onClick={async () => {
+
+                 const shouldReset = await DialogHelper.askDialog('', 'Wirklich Neuigkeiten zurücksetzen?')
+
+                 if (!shouldReset) return
+
                  this.props.state.resetIsNewState(this.props.series)
                }}
             >
@@ -83,17 +114,24 @@ class ListOutputItem extends React.Component<Props, any> {
 
           <article className="media">
 
-            <div className="media-left sticky-pos" style={{top: '0.5em'}}>
+            {
+              //z index is needed because we set the content to 2
+            }
+            <div className="media-left sticky-pos" style={{top: '0.5em', zIndex: 3}}>
 
               {
                 //check because legacy
                 this.props.series.lastQueriedAt &&
-                <div className="last-queried-at">
-                <span className="icon is-small icon-margin tooltip hoverable"
-                      style={{fontSize: '0.8em'}}
-                      data-tooltip="Zuletzt geprüft">
-                  <i className="fas fa-redo"></i>
-                </span>
+                <div className="last-queried-at"
+                     onClick={async () => {
+                       await this.props.state.captureBsStateFromOld([this.props.series], false)
+                     }}
+                >
+                  <span className="icon is-small icon-margin tooltip hoverable is-tooltip-right"
+                        style={{fontSize: '0.8em'}}
+                        data-tooltip="Zuletzt geprüft, clicken um manuall abzurufen">
+                    <i className="fas fa-redo"></i>
+                  </span>
                   <span className="mar-right-half">{getDateAsString(this.props.series.lastQueriedAt)}</span>
                   <span>{getTimeAsString(this.props.series.lastQueriedAt)}</span>
                 </div>

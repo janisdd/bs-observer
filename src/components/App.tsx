@@ -44,7 +44,7 @@ class App extends React.Component<Props, any> {
                      return
                    }
 
-                   await this.props.appState.captureBsStateFromOld()
+                   await this.props.appState.captureBsStateFromOld(this.props.appState.series, true)
                  }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-play"></i>
