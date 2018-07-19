@@ -3,6 +3,10 @@
 Ein Tool (Webseite) um Serien auf Bs zu beobachten
 
 
+## Demo
+
+[Demo](https://janisdd.github.io/bs-observer/)
+
 ## Workflow
 
 Etwas unübersichtlich/unstrukturiert, erklärt aber fast alle Funktionen
