@@ -57,29 +57,29 @@ module.exports = {
       inject: true,
       cache: false,
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {warnings: false},
-    //   uglifyOptions: {
-    //     ie8: false,
-    //     mangle: true,
-    //     compress: {
-    //       properties: true,
-    //       dead_code: true,
-    //       conditionals: true,
-    //       comparisons: true,
-    //       evaluate: true,
-    //       booleans: true,
-    //       loops: true,
-    //       unused: true,
-    //       if_return: true,
-    //       join_vars: true,
-    //       collapse_vars: true,
-    //       reduce_vars: true,
-    //       negate_iife: true,
-    //       warnings: true
-    //     }
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {warnings: false},
+      uglifyOptions: {
+        ie8: false,
+        mangle: true,
+        compress: {
+          properties: true,
+          dead_code: true,
+          conditionals: true,
+          comparisons: true,
+          evaluate: true,
+          booleans: true,
+          loops: true,
+          unused: true,
+          if_return: true,
+          join_vars: true,
+          collapse_vars: true,
+          reduce_vars: true,
+          negate_iife: true,
+          warnings: true
+        }
+      }
+    }),
     new CopyWebpackPlugin([
       {
         from: 'node_modules/react/dist/react.min.js',

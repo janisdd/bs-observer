@@ -1,9 +1,6 @@
 import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
-import {ChangeEvent} from "react";
-import _ = require("lodash");
-
 
 interface Props {
   appState: AppState
@@ -21,7 +18,8 @@ class ExportArea extends React.Component<Props, any> {
 
         <h4 className="title is-4">Status</h4>
 
-        <span className="icon has-text-info icon-margin clickable"
+        <span className="icon has-text-info icon-margin clickable tooltip is-tooltip-right"
+              data-tooltip="In Zwischenablage kopieren"
         onClick={() => {
 
           const copyText = document.getElementById("exportTextAreaState") as HTMLTextAreaElement;
@@ -46,7 +44,8 @@ class ExportArea extends React.Component<Props, any> {
 
         <h4 className="title is-4">Base-Url Liste</h4>
 
-        <span className="icon has-text-info icon-margin clickable"
+        <span className="icon has-text-info icon-margin clickable tooltip is-tooltip-right"
+              data-tooltip="In Zwischenablage kopieren"
               onClick={() => {
 
                 const copyText = document.getElementById("exportTextAreaSeriesList") as HTMLTextAreaElement;

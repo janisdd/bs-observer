@@ -1,6 +1,7 @@
 # Changelog
 
 
+- added readme
 - added ignore series option
   - ignored during capture & compare
 - last updated icon can now be clicked to update manually

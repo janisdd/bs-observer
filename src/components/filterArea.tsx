@@ -2,7 +2,6 @@ import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
 import {ChangeEvent} from "react";
-import _ = require("lodash");
 
 
 interface Props {

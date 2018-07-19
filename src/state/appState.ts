@@ -93,16 +93,16 @@ export class AppState {
       const state = FrontendManager.readStatusFromString(this.importString)
 
       if (!state) {
-        DialogHelper.error('Fehler', 'Status konnten nicht importiert werden, war ungültig')
+        DialogHelper.error('Fehler', 'Zustand konnten nicht importiert werden, war ungültig')
         return
       }
       this.series = state.series
     } catch (err) {
       console.error(err)
-      DialogHelper.error('Fehler', 'Status konnten nicht importiert werden')
+      DialogHelper.error('Fehler', 'Zustand konnten nicht importiert werden')
       return
     }
-    DialogHelper.show('Importiert', 'Status wurde importiert')
+    DialogHelper.show('Importiert', 'Zustand wurde importiert')
     this.isImportAreaDisplayed = false
 
     //maybe we imported the wrong one and want to rollback...? --> let the user manually save
@@ -205,11 +205,11 @@ export class AppState {
       })
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnte nicht gelöscht werden')
+      ReactNotifications.NotificationManager.error('Zustand konnte nicht gelöscht werden')
       return
     }
 
-    ReactNotifications.NotificationManager.success('Status wurde gelöscht', '', 3000)
+    ReactNotifications.NotificationManager.success('Zustand wurde gelöscht', '', 3000)
 
   }
 
@@ -415,7 +415,7 @@ export class AppState {
 
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnte nicht gespeichert werden')
+      ReactNotifications.NotificationManager.error('Zustand konnte nicht gespeichert werden')
       return
     }
 
@@ -424,7 +424,7 @@ export class AppState {
       this.hasBackupState = FrontendManager.hasBackupState()
       this.setIsLoaderDisplayed(false)
 
-      ReactNotifications.NotificationManager.success('Status gespeichert', '', 1500)
+      ReactNotifications.NotificationManager.success('Zustand gespeichert', '', 1500)
 
     })
   }
@@ -438,7 +438,7 @@ export class AppState {
       lastState = await FrontendManager.readBackupState()
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Backup-Status konnte nicht geladen werden')
+      ReactNotifications.NotificationManager.error('Backup-Zustand konnte nicht geladen werden')
       return
     }
 
@@ -474,7 +474,7 @@ export class AppState {
       lastState = await FrontendManager.readSeries()
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Status konnte nicht geladen werden')
+      ReactNotifications.NotificationManager.error('Zustand konnte nicht geladen werden')
       return
     }
 

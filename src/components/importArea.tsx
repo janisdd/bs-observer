@@ -1,8 +1,7 @@
 import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
-import {ChangeEvent, FocusEventHandler} from "react";
-import _ = require("lodash");
+import {ChangeEvent} from "react";
 import {DialogHelper} from "../helpers/dialogHelper";
 
 

@@ -104,9 +104,11 @@ class App extends React.Component<Props, any> {
 
                    await this.props.appState.writeState()
                  }}>
+
                 <span className="icon has-text-info">
                     <i className="fas fg-lg fa-save"></i>
                 </span>
+                <span>Zustand speichern</span>
               </a>
 
               <a
@@ -152,7 +154,7 @@ class App extends React.Component<Props, any> {
                      return
                    }
 
-                   const shouldDelete = await DialogHelper.askDialog('Status löschen', 'Status wirklisch löschen? Dadurch werden alle gespeicherten Informationn & Serien gelöscht')
+                   const shouldDelete = await DialogHelper.askDialog('Zustand löschen', 'Status wirklisch löschen? Dadurch werden alle gespeicherten Informationn & Serien gelöscht')
 
                    if (shouldDelete) {
                      this.props.appState.clearSavedState()
@@ -163,7 +165,7 @@ class App extends React.Component<Props, any> {
                     <i className="fas fg-lg fa-trash"></i>
                 </span>
                 <span>
-                  Status löschen
+                  Zustand löschen
                 </span>
               </a>
             </div>
