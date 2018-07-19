@@ -28,6 +28,7 @@ Etwas unübersichtlich/unstrukturiert, erklärt aber fast alle Funktionen
     - Tatsächlich muss man den Text dann manuell iregdnwo speichern (z.b. Textdatei/JSON-Datei)
     - Hier wird auch eine Liste der Serien angezeigt
   - Bei jeder Serie kann außerdem angekreuzt werden, welche folge man schon gesehen hat, was ebenfalls im Zustand (an jeder Serie) gespeichert wird
+  - Man kann dne globalen Zustand auch löschen, davor wird der Backup-Zustand auf den aktuellen Zustand gesetzt!
 
 - Hat man von einer Serie alle Folgen gesehen, wird das ebenfalls angezeigt (Specials werden dabei ignoriert)
   - Hierfüg gibt es ebenfalls einen Filter (zeige alle noch nicht gesehen...)
@@ -50,6 +51,11 @@ Etwas unübersichtlich/unstrukturiert, erklärt aber fast alle Funktionen
 
 - Die Reihenfolge der Serien ist nicht festgelegt und könnte sich ändern (sollte aber eigentlich nicht)
   - Vielleicht soll man sie alphabetisch sortieren?? [TODO]
+
+
+## Safari
+
+Bei Safari muss `Entwickler > Lokale Dateieinschränkungen deaktivieren` aktiviert werden, damit `localStorage` genutzt werden kann
 
 ## Test-Server starten
 
@@ -93,6 +99,7 @@ npm run test
 - Stylus
 - Jest
 - SweetAlert2
+- Fontawesome
 
 for the full list see `package.json > dependencies`
 

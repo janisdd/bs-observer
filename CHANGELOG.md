@@ -1,6 +1,7 @@
 # Changelog
 
 
+- changed fontawesome to local usage
 - added readme
 - added ignore series option
   - ignored during capture & compare

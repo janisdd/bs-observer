@@ -97,7 +97,21 @@ module.exports = {
       {
         from: 'node_modules/bulma-extensions/dist/css/bulma-extensions.min.css',
         to: 'bulma-extensions.css',
+      },
+      {
+        from: 'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
+        to: 'webfonts/icons.css',
+      },
+      {
+        from: 'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
+        to: 'webfonts/fa-solid-900.woff2',
+      },
+      {
+        from: 'node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2',
+        to: 'webfonts/fa-regular-400.woff2',
       }
+
+
     ]),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
