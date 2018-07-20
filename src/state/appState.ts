@@ -25,15 +25,25 @@ export class AppState {
 
   @observable searchText = ''
 
+  /**
+   * the value of the progress bar
+   */
   @observable currentProgressVal = 0
   @observable maxProgressVal = 0
 
   @observable isExportAreaDisplayed = false
   @observable isImportAreaDisplayed = false
 
+  /**
+   * the state to export as string
+   * @type {string}
+   */
   @observable exportString = ''
   @observable exportStringSizeString = ''
 
+  /**
+   * the state to import as string
+   */
   @observable importString = ''
   @observable importStringSizeString = ''
 
@@ -43,6 +53,8 @@ export class AppState {
   @observable showOnlyWatcherMissingEng = false
 
   @observable hasBackupState = false
+
+  @observable lastSavedAt: Date | null = null
 
 
   //--- computed
@@ -410,8 +422,10 @@ export class AppState {
   @action
   async writeState() {
 
+    const now = new Date()
+
     try {
-      await FrontendManager.writeSeries(this.series)
+      await FrontendManager.writeSeries(this.series, now)
 
     } catch (err) {
       console.error(err)
@@ -423,6 +437,7 @@ export class AppState {
 
       this.hasBackupState = FrontendManager.hasBackupState()
       this.setIsLoaderDisplayed(false)
+      this.lastSavedAt = now
 
       ReactNotifications.NotificationManager.success('Zustand gespeichert', '', 1500)
 
@@ -449,6 +464,7 @@ export class AppState {
 
     runInAction(() => {
       this.series = (lastState as ExportAppState).series
+      this.lastSavedAt = (lastState as ExportAppState).createdAt
       console.log(`loaded backup state (${this.series.length})`)
     })
   }
@@ -488,6 +504,7 @@ export class AppState {
       }
 
       this.series = (lastState as ExportAppState).series
+      this.lastSavedAt = (lastState as ExportAppState).createdAt
       console.log(`loaded old series (${this.series.length})`)
     })
   }

@@ -1,6 +1,7 @@
 # Changelog
 
 
+- [feature/break] added timestamp to global state
 - changed fontawesome to local usage
 - added readme
 - added ignore series option

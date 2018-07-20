@@ -32,6 +32,7 @@ export class FrontendManager {
     const state: ExportAppState = {
       version: appVersion,
       series: series,
+      createdAt: new Date() //we might have modified the state without saving but we export this state so we use the current date
     }
 
     const stateString = JSON.stringify(state)
@@ -45,7 +46,7 @@ export class FrontendManager {
     console.log(`stat is ${lengthInBytes} bytes long --> ${this.lastStateStringSizeString}`)
   }
 
-  public static writeSeries(series: Series[]): Promise<void> {
+  public static writeSeries(series: Series[], date: Date): Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
       const copySeries: Series[] = series
@@ -88,6 +89,7 @@ export class FrontendManager {
       const state: ExportAppState = {
         version: appVersion,
         series: copySeries,
+        createdAt: date
       }
 
       const stateString = JSON.stringify(state)
@@ -216,6 +218,10 @@ export class FrontendManager {
 export interface ExportAppState {
 
   version: string
+  /**
+   * when the state was created
+   */
+  createdAt: Date
   series: Series[]
 }
 

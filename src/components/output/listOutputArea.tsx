@@ -2,6 +2,7 @@ import * as React from "react";
 import {observer} from "mobx-react"
 import ListOutputItem from "./listOutputItem";
 import {AppState} from "../../state/appState";
+import {FormatterHelper} from "../../helpers/formatterHelper";
 
 
 interface Props {
@@ -66,12 +67,31 @@ class ListOutputArea extends React.Component<Props, any> {
     return (
       <div>
 
-        <div className="series-count">{this.props.appState.series.length} Serie(n) insgesamt</div>
-        {
-          series.length !== this.props.appState.series.length &&
-          <div className="series-count">{series.length} Serie(n) nach Filter</div>
-        }
+        <div className="flexed">
 
+          <div>
+            <div className="series-count">{this.props.appState.series.length} Serie(n) insgesamt</div>
+            {
+              series.length !== this.props.appState.series.length &&
+              <div className="series-count">{series.length} Serie(n) nach Filter</div>
+            }
+          </div>
+
+          {
+            this.props.appState.lastSavedAt &&
+            <div style={{flex: 1}}
+              className="series-count">
+
+              <span className="icon hoverable tooltip"
+                    data-tooltip="Zuletzt gespeichert am"
+              >
+                <i className="fas fa-save"></i>
+              </span>
+
+              {FormatterHelper.getDateAsString(this.props.appState.lastSavedAt)} - {FormatterHelper.getTimeAsString(this.props.appState.lastSavedAt)}</div>
+          }
+
+        </div>
 
         <div>
           {
@@ -126,7 +146,7 @@ class ListOutputArea extends React.Component<Props, any> {
           {
             this.props.appState.isLoaderDisplayed === false && notMarkedSeries.length > 0 &&
             <div>
-              <h1 className="series-list-title">Andere Serien</h1>
+              <h1 className="series-list-title">Serien</h1>
 
               <div className="series-list">
                 {

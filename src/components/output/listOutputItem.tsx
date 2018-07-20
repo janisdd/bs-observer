@@ -3,6 +3,7 @@ import {observer} from "mobx-react"
 import {AppState} from "../../state/appState";
 import {ChangeEvent} from "react";
 import {DialogHelper} from "../../helpers/dialogHelper";
+import {FormatterHelper} from "../../helpers/formatterHelper";
 
 
 interface Props {
@@ -132,8 +133,8 @@ class ListOutputItem extends React.Component<Props, any> {
                         data-tooltip="Zuletzt geprüft, clicken um manuall abzurufen">
                     <i className="fas fa-redo"></i>
                   </span>
-                  <span className="mar-right-half">{getDateAsString(this.props.series.lastQueriedAt)}</span>
-                  <span>{getTimeAsString(this.props.series.lastQueriedAt)}</span>
+                  <span className="mar-right-half">{FormatterHelper.getDateAsString(this.props.series.lastQueriedAt)}</span>
+                  <span>{FormatterHelper.getTimeAsString(this.props.series.lastQueriedAt)}</span>
                 </div>
               }
 
@@ -357,14 +358,3 @@ class ListOutputItem extends React.Component<Props, any> {
 
 export default ListOutputItem
 
-function getDateAsString(date: Date): string {
-
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
-
-}
-
-function getTimeAsString(date: Date): string {
-
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
-
-}
