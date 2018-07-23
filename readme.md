@@ -35,7 +35,7 @@ Etwas unübersichtlich/unstrukturiert, erklärt aber fast alle Funktionen
   - Man kann dne globalen Zustand auch löschen, davor wird der Backup-Zustand auf den aktuellen Zustand gesetzt!
 
 - Hat man von einer Serie alle Folgen gesehen, wird das ebenfalls angezeigt (Specials werden dabei ignoriert)
-  - Hierfüg gibt es ebenfalls einen Filter (zeige alle noch nicht gesehen...)
+  - Hierfür gibt es ebenfalls einen Filter (zeige alle noch nicht gesehen...)
   - Wurde eine Serie noch nicht vollständig übersetzt, zählt sie als noch nicht vollständig gesehen
     - Das hat den Sinn, dass man leichter sieht, welche Serien noch nicht vollständig übersetzt wurden (kann sich aber ändern)
 

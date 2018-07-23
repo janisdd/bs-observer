@@ -129,7 +129,7 @@ class ListOutputArea extends React.Component<Props, any> {
                   markedSeries.map((value, index) => {
                     return (
                       <div className="list-element" key={value.baseUrl}>
-                        <ListOutputItem state={this.props.appState} series={value}/>
+                        <ListOutputItem state={this.props.appState} series={value} seriesNumber={index}/>
                       </div>
                     )
                   })
@@ -153,7 +153,7 @@ class ListOutputArea extends React.Component<Props, any> {
                   notMarkedSeries.map((value, index) => {
                     return (
                       <div className="list-element" key={value.baseUrl}>
-                        <ListOutputItem state={this.props.appState} series={value}/>
+                        <ListOutputItem state={this.props.appState} series={value} seriesNumber={index}/>
                       </div>
                     )
                   })

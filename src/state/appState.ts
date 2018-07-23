@@ -114,7 +114,7 @@ export class AppState {
       DialogHelper.error('Fehler', 'Zustand konnten nicht importiert werden')
       return
     }
-    DialogHelper.show('Importiert', 'Zustand wurde importiert')
+    DialogHelper.show('Importiert', 'Zustand wurde importiert & gespeichert')
     this.isImportAreaDisplayed = false
 
     //maybe we imported the wrong one and want to rollback...? --> let the user manually save
@@ -226,6 +226,13 @@ export class AppState {
   }
 
   @action
+  collapseAllSeries() {
+    for(const series of this.series) {
+        series.selectedSeasonId = null
+    }
+  }
+
+  @action
   setSearchText(text: string) {
     this.searchText = text
   }
@@ -259,14 +266,20 @@ export class AppState {
 
     const newSeriesBaseUrls: string[] = []
 
+
+
+    //filter all already known series out, take only new ones
     for (const url of seriesBaseUrls) {
       if (oldSeriesBaseUrls.indexOf(url) !== -1) continue
       newSeriesBaseUrls.push(url)
     }
 
     if (newSeriesBaseUrls.length === 0) {
+      DialogHelper.show('', 'All hinzuzufügenden Serien sind bereits vorhanden')
       return
     }
+
+    let alreadyKnownSeries = seriesBaseUrls.length - newSeriesBaseUrls.length
 
     let series: Series[] = []
     let seriesFinishedCount = 0
@@ -302,6 +315,8 @@ export class AppState {
       return
     }
 
+    console.log('test')
+
     setTimeout(() => {
       runInAction(() => {
         // this.series.push(...series)
@@ -317,7 +332,7 @@ export class AppState {
 
         this.writeState()
 
-        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt`)
+        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt, ${alreadyKnownSeries} bereits vorhanden.`)
       })
     }, 500)
 
@@ -540,6 +555,8 @@ export class AppState {
 
   /**
    * checks if we watched all ger/eng episodes
+   *
+   * if some are not translated then we use not watched
    * @param {Series} series
    * @param {boolean} eng
    * @param {boolean} excludeSpecials

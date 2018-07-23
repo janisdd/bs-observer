@@ -9,6 +9,7 @@ import {FormatterHelper} from "../../helpers/formatterHelper";
 interface Props {
   state: AppState
   series: Series
+  seriesNumber: number
 }
 
 
@@ -28,7 +29,7 @@ class ListOutputItem extends React.Component<Props, any> {
                    data-tooltip="Löscht die Serie und alle verbundenen Daten"
                    onClick={async () => {
 
-                     const shouldDelete = await DialogHelper.askDialog('Serie löschen', 'Solle die Serie und alle verbunden Daten wirklich gelöscht werden?')
+                     const shouldDelete = await DialogHelper.askDialog('Serie löschen', 'Solle die Serie und alle verbunden Daten wirklich gelöscht werden? Der Zustand wird nicht automatisch gespeichert.')
 
 
                      if (!shouldDelete) {
@@ -133,7 +134,8 @@ class ListOutputItem extends React.Component<Props, any> {
                         data-tooltip="Zuletzt geprüft, clicken um manuall abzurufen">
                     <i className="fas fa-redo"></i>
                   </span>
-                  <span className="mar-right-half">{FormatterHelper.getDateAsString(this.props.series.lastQueriedAt)}</span>
+                  <span
+                    className="mar-right-half">{FormatterHelper.getDateAsString(this.props.series.lastQueriedAt)}</span>
                   <span>{FormatterHelper.getTimeAsString(this.props.series.lastQueriedAt)}</span>
                 </div>
               }
@@ -294,7 +296,7 @@ class ListOutputItem extends React.Component<Props, any> {
                               <td>
                                 <div className="field">
                                   <input className="is-checkradio" type="checkbox"
-                                         id={'watched-ger-' + index}
+                                         id={'watched-ger-' + index + '-' + this.props.seriesNumber}
                                          checked={episode.watchedGer}
                                          onChange={(e) => {
                                            //console.log(arguments)
@@ -302,7 +304,7 @@ class ListOutputItem extends React.Component<Props, any> {
                                            this.props.state.setWatched(episode, false, val)
                                          }}
                                   />
-                                  <label htmlFor={'watched-ger-' + index}/>
+                                  <label htmlFor={'watched-ger-' + index + '-' + this.props.seriesNumber}/>
                                 </div>
                               </td>
                               <td>
@@ -324,7 +326,7 @@ class ListOutputItem extends React.Component<Props, any> {
 
                                 <div className="field">
                                   <input className="is-checkradio" type="checkbox"
-                                         id={'watched-eng-' + index}
+                                         id={'watched-eng-' + index + '-'+ this.props.seriesNumber}
                                          checked={episode.watchedEng}
                                          onChange={(e) => {
                                            //console.log(arguments)
@@ -332,7 +334,7 @@ class ListOutputItem extends React.Component<Props, any> {
                                            this.props.state.setWatched(episode, true, val)
                                          }}
                                   />
-                                  <label htmlFor={'watched-eng-' + index}/>
+                                  <label htmlFor={'watched-eng-' + index + '-'+ this.props.seriesNumber}/>
                                 </div>
                               </td>
                             </tr>

@@ -40,6 +40,12 @@ class FilterArea extends React.Component<Props, any> {
               </p>
             </div>
 
+            <div>
+              <a className="button is-white" onClick={() => {
+                this.props.appState.collapseAllSeries()
+              }}>Alle zuklappen</a>
+            </div>
+
           </div>
           <div className="column">
             <h1>Filter</h1>

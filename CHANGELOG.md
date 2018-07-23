@@ -1,6 +1,8 @@
 # Changelog
 
-
+- added import series doubled series message
+- added collapse all series seasons button (in filter view)
+- [fixed] issue where one could not check watched states because multiple series (seasons) were open
 - [feature/break] added timestamp to global state
 - changed fontawesome to local usage
 - added readme
