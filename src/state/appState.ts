@@ -271,6 +271,7 @@ export class AppState {
     //filter all already known series out, take only new ones
     for (const url of seriesBaseUrls) {
       if (oldSeriesBaseUrls.indexOf(url) !== -1) continue
+      if (newSeriesBaseUrls.indexOf(url) !== -1) continue
       newSeriesBaseUrls.push(url)
     }
 
@@ -332,7 +333,7 @@ export class AppState {
 
         this.writeState()
 
-        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt, ${alreadyKnownSeries} bereits vorhanden.`)
+        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt, ${alreadyKnownSeries} bereits vorhanden oder doppelt.`)
       })
     }, 500)
 

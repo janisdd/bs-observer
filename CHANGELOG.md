@@ -1,5 +1,6 @@
 # Changelog
 
+- one cannot longer add the same series twice
 - added import series doubled series message
 - added collapse all series seasons button (in filter view)
 - [fixed] issue where one could not check watched states because multiple series (seasons) were open
