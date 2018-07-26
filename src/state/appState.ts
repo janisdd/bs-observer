@@ -52,9 +52,18 @@ export class AppState {
   @observable showOnlyWatcherMissingGer = false
   @observable showOnlyWatcherMissingEng = false
 
+  @observable showOnlyIgnoredFilter = false
+
   @observable hasBackupState = false
 
   @observable lastSavedAt: Date | null = null
+
+
+  /**
+   * true: cancel the requests
+   * false: not
+   */
+  @observable isCancelCaptureStateRequested = false
 
 
   //--- computed
@@ -66,6 +75,15 @@ export class AppState {
 
   //--- actions
 
+  @action
+  setShowOnlyIgnoredFilter(showOnlyIgnored: boolean) {
+    this.showOnlyIgnoredFilter = showOnlyIgnored
+  }
+
+  @action
+  setsIsCancelCaptureStateRequested(isCancelCaptureStateRequested: boolean) {
+    this.isCancelCaptureStateRequested = isCancelCaptureStateRequested
+  }
 
   @action
   refreshExportStateString() {
@@ -227,8 +245,8 @@ export class AppState {
 
   @action
   collapseAllSeries() {
-    for(const series of this.series) {
-        series.selectedSeasonId = null
+    for (const series of this.series) {
+      series.selectedSeasonId = null
     }
   }
 
@@ -258,14 +276,13 @@ export class AppState {
 
 
   @action
-  async getNewSeriesInitialState() {
+  async getNewSeriesInitialState(): Promise<void> {
 
     const seriesBaseUrls = this.parseSeriesUrls(this.addSeriesUrlsText)
 
     const oldSeriesBaseUrls = this.series.map(p => p.baseUrl)
 
     const newSeriesBaseUrls: string[] = []
-
 
 
     //filter all already known series out, take only new ones
@@ -298,17 +315,24 @@ export class AppState {
           runInAction(() => {
             this.currentProgressVal = numFinished
           })
-        })
+        }, this)
 
     } catch (err) {
-      console.error(err)
-      const errorSeriesBaseUrl = newSeriesBaseUrls[seriesFinishedCount - 1]
-      DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
+
+      if (err.isCancel) {
+        DialogHelper.error('', err.message)
+      }
+      else {
+        console.error(err)
+        const errorSeriesBaseUrl = newSeriesBaseUrls[seriesFinishedCount - 1]
+        DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
+      }
 
       setTimeout(() => {
         runInAction(() => {
           this.setIsLoaderDisplayed(false)
           this.updateSeriesUrlsText('')
+          this.setsIsCancelCaptureStateRequested(false)
         })
       }, 500)
 
@@ -316,7 +340,6 @@ export class AppState {
       return
     }
 
-    console.log('test')
 
     setTimeout(() => {
       runInAction(() => {
@@ -330,6 +353,7 @@ export class AppState {
         }
 
         this.setIsLoaderDisplayed(false)
+        this.setsIsCancelCaptureStateRequested(false)
 
         this.writeState()
 
@@ -348,7 +372,7 @@ export class AppState {
    * @returns {Promise<void>}
    */
   @action
-  async captureBsStateFromOld(oldSeries: Series[], overwriteSeries: boolean) {
+  async captureBsStateFromOld(oldSeries: Series[], overwriteSeries: boolean): Promise<void> {
 
 
     let series: Series[] = []
@@ -362,11 +386,11 @@ export class AppState {
       return
     }
 
-    this.maxProgressVal = seriesBaseUrls.length
+    let seriesToIgnore = overwriteSeries ? oldSeries.filter(p => p.ignoreOnCompare === true) : []
+
+    this.maxProgressVal = seriesBaseUrls.length - seriesToIgnore.length
     this.currentProgressVal = 0
     this.setIsLoaderDisplayed(true)
-
-    let seriesToIgnore = overwriteSeries ? oldSeries.filter(p => p.ignoreOnCompare === true) : []
 
     try {
       series = await Capture.capture(seriesBaseUrls,
@@ -376,15 +400,23 @@ export class AppState {
           runInAction(() => {
             this.currentProgressVal = numFinished
           })
-        })
+        }, this)
     } catch (err) {
-      console.error(err)
-      const errorSeriesBaseUrl = seriesBaseUrls[seriesFinishedCount - 1]
-      DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
+
+      if (err.isCancel) {
+        DialogHelper.error('', err.message)
+      }
+      else {
+        console.error(err)
+        const errorSeriesBaseUrl = seriesBaseUrls[seriesFinishedCount - 1]
+        DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
+      }
+
 
       setTimeout(() => {
         runInAction(() => {
           this.setIsLoaderDisplayed(false)
+          this.setsIsCancelCaptureStateRequested(false)
         })
       }, 1000)
 
@@ -429,6 +461,7 @@ export class AppState {
         }
 
         this.setIsLoaderDisplayed(false)
+        this.setsIsCancelCaptureStateRequested(false)
 
       })
     }, 300)

@@ -1,5 +1,8 @@
 # Changelog
 
+- [feature] added show only ignored filter
+- ignored series are not counted when dispalying the progress for the capture
+- [feature] added abort/cancel check for news button
 - one cannot longer add the same series twice
 - added import series doubled series message
 - added collapse all series seasons button (in filter view)

@@ -55,6 +55,10 @@ class ListOutputArea extends React.Component<Props, any> {
       series = series.filter(p => this.props.appState.getHasSeriesSomethingNew(p))
     }
 
+    if (this.props.appState.showOnlyIgnoredFilter) {
+      series = series.filter(p => p.ignoreOnCompare)
+    }
+
     if (this.props.appState.isFilterAreaDisplayed) {
       series = this.getSearchResults(series)
     }
@@ -80,7 +84,7 @@ class ListOutputArea extends React.Component<Props, any> {
           {
             this.props.appState.lastSavedAt &&
             <div style={{flex: 1}}
-              className="series-count">
+                 className="series-count">
 
               <span className="icon hoverable tooltip"
                     data-tooltip="Zuletzt gespeichert am"
@@ -88,7 +92,8 @@ class ListOutputArea extends React.Component<Props, any> {
                 <i className="fas fa-save"></i>
               </span>
 
-              {FormatterHelper.getDateAsString(this.props.appState.lastSavedAt)} - {FormatterHelper.getTimeAsString(this.props.appState.lastSavedAt)}</div>
+              {FormatterHelper.getDateAsString(this.props.appState.lastSavedAt)} - {FormatterHelper.getTimeAsString(this.props.appState.lastSavedAt)}
+            </div>
           }
 
         </div>
@@ -114,6 +119,12 @@ class ListOutputArea extends React.Component<Props, any> {
                 {
                   this.props.appState.maxProgressVal
                 }
+              </div>
+
+              <div>
+                <a className={['button', 'is-white', this.props.appState.isCancelCaptureStateRequested ? 'div-disabled' : ''].join(' ')} onClick={() => {
+                  this.props.appState.setsIsCancelCaptureStateRequested(true)
+                }}>Abbrechen</a>
               </div>
 
             </div>

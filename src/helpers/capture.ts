@@ -1,10 +1,12 @@
 import axios from 'axios'
+import {AppState} from "../state/appState";
 
 export class Capture {
-  public static async capture(baseUrls: string[], seriesToIgnore: Series[], onOneCaptureFinished: (numFinished: number) => void): Promise<Series[]> {
+  public static async capture(baseUrls: string[], seriesToIgnore: Series[], onOneCaptureFinished: (numFinished: number) => void, appState: AppState): Promise<Series[]> {
 
     const now = new Date()
     const series: Series[] = []
+    let captureCount = 0
 
     // const promises: Promise<Series>[] = []
     //
@@ -16,7 +18,7 @@ export class Capture {
       if (ignoredSeries) {
         series.push(ignoredSeries)
         console.log('ignored: ' + baseUrl)
-        onOneCaptureFinished(series.length)
+        onOneCaptureFinished(captureCount)
         continue
       }
 
@@ -24,10 +26,19 @@ export class Capture {
         const _series = await this.getSeriesState(baseUrl, now)
         series.push(_series)
         console.log('finished capture for: ' + baseUrl)
-        onOneCaptureFinished(series.length)
+        captureCount++
+        onOneCaptureFinished(captureCount)
       } catch (err) {
         throw err
       }
+
+      if (appState.isCancelCaptureStateRequested) {
+        const err = new Error('Vorgang wurde abgebrochen')
+        // @ts-ignore
+        err.isCancel = true
+        throw err
+      }
+
     }
     return series
   }

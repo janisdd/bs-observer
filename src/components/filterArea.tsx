@@ -87,6 +87,18 @@ class FilterArea extends React.Component<Props, any> {
               <label htmlFor={'show-only-not-watched-eng'}>Zeige noch nicht alle gesehen eng</label>
             </div>
 
+            <div className="field">
+              <input className="is-checkradio" type="checkbox"
+                     id={'show-only-ignored'}
+                     checked={this.props.appState.showOnlyIgnoredFilter}
+                     onChange={(e) => {
+                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       this.props.appState.setShowOnlyIgnoredFilter(val)
+                     }}
+              />
+              <label htmlFor={'show-only-ignored'}>Zeige alle ignorierten</label>
+            </div>
+
           </div>
         </div>
 
