@@ -280,8 +280,8 @@ body {
   padding: 2em 2em 0 2em;
 }
 .sticky-pos {
-  poition: -webkit-sticky;
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
   z-index: 4;
 }
@@ -328,16 +328,6 @@ body {
   font-weight: 100;
   margin: 1em;
   text-align: end;
-}
-.season-watched-ger {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-.season-watched-eng {
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 .clickable {
   opacity: 0.7 !important;
@@ -669,8 +659,8 @@ body {
   padding: 2em 2em 0 2em;
 }
 .sticky-pos {
-  poition: -webkit-sticky;
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
   z-index: 4;
 }
@@ -717,16 +707,6 @@ body {
   font-weight: 100;
   margin: 1em;
   text-align: end;
-}
-.season-watched-ger {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-.season-watched-eng {
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 .loader-wrapper {
   position: relative;
