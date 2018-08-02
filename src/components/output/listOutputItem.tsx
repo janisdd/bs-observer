@@ -194,17 +194,22 @@ class ListOutputItem extends React.Component<Props, any> {
                   <div className="columns" style={{marginTop: '0'}}>
                     {
                       this.props.series.seasons.map((value, index) => {
+
+                        const allWatchedGer =  value.episodes.every(p => p.watchedGer)
+                        const allWatchedEng = value.episodes.every(p => p.watchedEng)
+                        const isSelectedSeason = this.props.series.selectedSeasonId === value.seasonId
+
                         return (
                           <div key={index} className="column is-narrow">
                             <a
                               className={['button',
 
-                                value.episodes.every(p => p.watchedGer)
+                                (allWatchedGer ||  allWatchedEng) && isSelectedSeason === false
                                   ? 'is-primary is-outlined'
-                                  : value.episodes.every(p => p.watchedEng)
-                                  ? 'is-primary is-outlined'
+                                  : (allWatchedGer ||  allWatchedEng) && isSelectedSeason === true
+                                  ? 'is-primary'
                                   : 'is-light',
-                                this.props.series.selectedSeasonId === value.seasonId ? 'is-primary' : '',
+                                isSelectedSeason ? 'is-primary' : '',
                                 value.state === 'new' ? 'badge' : ''
                               ].join(' ')}
                               data-badge={value.state === 'new' ? '' : null}
