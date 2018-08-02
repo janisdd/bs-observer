@@ -119,7 +119,7 @@ class ListOutputItem extends React.Component<Props, any> {
             {
               //z index is needed because we set the content to 2
             }
-            <div className="media-left sticky-pos" style={{top: '0.5em', zIndex: 3}}>
+            <div className="media-left sticky-pos" style={{top: '2em', zIndex: 3}}>
 
               {
                 //check because legacy
@@ -185,7 +185,7 @@ class ListOutputItem extends React.Component<Props, any> {
             <div className="media-content" style={{marginTop: '1em'}}>
               <div className="content">
 
-                <div className="sticky-pos series-title-and-seasons">
+                <div className="sticky-pos series-title-and-seasons" style={{top: '3em'}}>
                   <a style={{fontSize: '1.5em', fontWeight: 'bold'}} href={this.props.series.baseUrl} target="_blank">
                     {
                       this.props.series.name
@@ -198,7 +198,12 @@ class ListOutputItem extends React.Component<Props, any> {
                           <div key={index} className="column is-narrow">
                             <a
                               className={['button',
-                                'is-light',
+
+                                value.episodes.every(p => p.watchedGer)
+                                  ? 'is-primary is-outlined'
+                                  : value.episodes.every(p => p.watchedEng)
+                                  ? 'is-primary is-outlined'
+                                  : 'is-light',
                                 this.props.series.selectedSeasonId === value.seasonId ? 'is-primary' : '',
                                 value.state === 'new' ? 'badge' : ''
                               ].join(' ')}
@@ -216,6 +221,8 @@ class ListOutputItem extends React.Component<Props, any> {
                               }}
                             >
                               {value.seasonId === '0' ? 'Specials' : value.seasonId}
+
+
                             </a>
                           </div>
                         )
@@ -326,7 +333,7 @@ class ListOutputItem extends React.Component<Props, any> {
 
                                 <div className="field">
                                   <input className="is-checkradio" type="checkbox"
-                                         id={'watched-eng-' + index + '-'+ this.props.seriesNumber}
+                                         id={'watched-eng-' + index + '-' + this.props.seriesNumber}
                                          checked={episode.watchedEng}
                                          onChange={(e) => {
                                            //console.log(arguments)
@@ -334,7 +341,7 @@ class ListOutputItem extends React.Component<Props, any> {
                                            this.props.state.setWatched(episode, true, val)
                                          }}
                                   />
-                                  <label htmlFor={'watched-eng-' + index + '-'+ this.props.seriesNumber}/>
+                                  <label htmlFor={'watched-eng-' + index + '-' + this.props.seriesNumber}/>
                                 </div>
                               </td>
                             </tr>

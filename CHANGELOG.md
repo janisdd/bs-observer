@@ -1,5 +1,14 @@
 # Changelog
 
+- [feature] added feature to compare the local series list against an external list to see which series we are missing
+  - then displaying the missing series in a modal
+  - under the add tab
+- [fixed] when adding series and an error occurred during the get procedure we now properly display the series base url
+- [improved] import now trims empty lines (e.g. lines with only spaces)
+- [feature] a fully watched season (eng/ger) will not be displayed outlined
+  - this way one can see which seasons are fully watched
+  - specials are also treated this way
+- [improved] header bar is now sticky, card parts are now sticky on safari too
 - [feature] added show only ignored filter
 - ignored series are not counted when dispalying the progress for the capture
 - [feature] added abort/cancel check for news button

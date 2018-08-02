@@ -30,7 +30,7 @@ class App extends React.Component<Props, any> {
 
         <ReactNotifications.NotificationContainer/>
 
-        <nav className="navbar" role="navigation" aria-label="main navigation">
+        <nav className="navbar sticky-pos" role="navigation" aria-label="main navigation">
           <div className="navbar-brand">
 
           </div>
@@ -172,7 +172,7 @@ class App extends React.Component<Props, any> {
           </div>
         </nav>
 
-        <div className="is-divider" style={{margin: '0'}}></div>
+        <div className="is-divider sticky-pos" style={{margin: '0', top: '52px'}}></div>
 
         {
           this.props.appState.isInputAreaDisplayed &&

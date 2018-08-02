@@ -17,6 +17,18 @@ export class AppState {
   @observable addSeriesUrlsText: string =
     ``
 
+
+  /**
+   * used when we compare our list with an external list and then display what series we are missing
+   */
+  @observable missingComparedSeriesBaseUrls: string[] = []
+
+  @observable isCompareSeriesBaseUrlsModalDisplayed = false
+
+  @observable compareSeriesUrlsText: string = `
+https://bs.to/serie/D-Gray-Ma
+  `
+
   @observable isLoaderDisplayed = false
 
   @observable isInputAreaDisplayed = false
@@ -256,8 +268,13 @@ export class AppState {
   }
 
   @action
-  updateSeriesUrlsText(text: string) {
+  setSeriesUrlsText(text: string) {
     this.addSeriesUrlsText = text
+  }
+
+  @action
+  setCompareSeriesUrlsText(text: string) {
+    this.compareSeriesUrlsText = text
   }
 
   @action
@@ -274,6 +291,41 @@ export class AppState {
 
   }
 
+
+  @action
+  closeCompareSeriesBaseUrlsModal() {
+    this.isCompareSeriesBaseUrlsModalDisplayed = false
+  }
+
+  @action
+  compareBaseUrlLists(): void {
+
+    this.missingComparedSeriesBaseUrls = []
+
+    const externalBaseUrls = this.parseSeriesUrls(this.compareSeriesUrlsText)
+    const myBaseUrls = this.series.map(p => p.baseUrl)
+
+
+    let missingBaseUrls: string[] = []
+
+    for (const externalBaseUrl of externalBaseUrls) {
+
+      if (myBaseUrls.indexOf(externalBaseUrl) === -1) {
+        //we miss this series in our list...
+        missingBaseUrls.push(externalBaseUrl)
+      }
+    }
+
+    if (missingBaseUrls.length === 0) {
+
+      DialogHelper.show('Keine Unterschiede', 'In der zu vergleichenden Liste wurden keine neuen Serien gefunden, die nicht schon in in dieser Liste enthalten sind')
+
+      return
+    }
+
+    this.missingComparedSeriesBaseUrls = missingBaseUrls
+    this.isCompareSeriesBaseUrlsModalDisplayed = true
+  }
 
   @action
   async getNewSeriesInitialState(): Promise<void> {
@@ -324,14 +376,14 @@ export class AppState {
       }
       else {
         console.error(err)
-        const errorSeriesBaseUrl = newSeriesBaseUrls[seriesFinishedCount - 1]
+        const errorSeriesBaseUrl = newSeriesBaseUrls[seriesFinishedCount]
         DialogHelper.error('', `Daten konnten für '${errorSeriesBaseUrl}' nicht abgerufen werden`)
       }
 
       setTimeout(() => {
         runInAction(() => {
           this.setIsLoaderDisplayed(false)
-          this.updateSeriesUrlsText('')
+          this.setSeriesUrlsText('')
           this.setsIsCancelCaptureStateRequested(false)
         })
       }, 500)
@@ -681,7 +733,9 @@ export class AppState {
     const lines = urls.split('\n')
 
 
-    for (const line of lines) {
+    for (let line of lines) {
+
+      line = line.trim()
 
       if (line === '') continue
 
