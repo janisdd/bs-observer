@@ -25,9 +25,7 @@ export class AppState {
 
   @observable isCompareSeriesBaseUrlsModalDisplayed = false
 
-  @observable compareSeriesUrlsText: string = `
-https://bs.to/serie/D-Gray-Ma
-  `
+  @observable compareSeriesUrlsText: string = ``
 
   @observable isLoaderDisplayed = false
 
