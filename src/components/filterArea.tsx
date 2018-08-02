@@ -43,7 +43,14 @@ class FilterArea extends React.Component<Props, any> {
             <div>
               <a className="button is-white" onClick={() => {
                 this.props.appState.collapseAllSeries()
-              }}>Alle zuklappen</a>
+              }}>
+                <span>Alle zuklappen</span>
+
+                <span className="icon has-text-info tooltip"
+                      data-tooltip="Klappt alle Staffeln von allen Serien zu">
+                <i className="fas fa-info-circle"/>
+              </span>
+              </a>
             </div>
 
           </div>
