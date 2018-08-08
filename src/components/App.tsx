@@ -1,6 +1,6 @@
 import * as React from "react";
 import {observer} from "mobx-react"
-import InputArea from "./InputArea";
+import AddArea from "./addArea";
 import ListOutputArea from "./output/listOutputArea";
 import {AppState} from "../state/appState";
 import FilterArea from "./filterArea";
@@ -112,14 +112,14 @@ class App extends React.Component<Props, any> {
               </a>
 
               <a
-                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isExportAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isExportModalDisplayed? 'is-my-active' : ''].join(' ')}
                 onClick={async () => {
 
                   if (this.props.appState.isLoaderDisplayed) {
                     return
                   }
 
-                  this.props.appState.setIsExportAreaDisplayed(!this.props.appState.isExportAreaDisplayed)
+                  this.props.appState.openExportModal()
                 }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-upload"></i>
@@ -130,14 +130,15 @@ class App extends React.Component<Props, any> {
               </a>
 
               <a
-                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isImportAreaDisplayed ? 'is-my-active' : ''].join(' ')}
+                className={['navbar-item', this.props.appState.isLoaderDisplayed ? 'div-disabled' : '', this.props.appState.isImportModalDisplayed ? 'is-my-active' : ''].join(' ')}
                 onClick={async () => {
 
                   if (this.props.appState.isLoaderDisplayed) {
                     return
                   }
 
-                  this.props.appState.setIsImportAreaDisplayed(!this.props.appState.isImportAreaDisplayed)
+                  this.props.appState.openImportModal()
+
                 }}>
                 <span className="icon has-text-info icon-margin">
                     <i className="fas fg-lg fa-download"></i>
@@ -176,17 +177,41 @@ class App extends React.Component<Props, any> {
 
         {
           this.props.appState.isInputAreaDisplayed &&
-          <InputArea appState={this.props.appState}/>
+          <AddArea appState={this.props.appState}/>
         }
 
-        {
-          this.props.appState.isImportAreaDisplayed &&
-          <ImportArea appState={this.props.appState}/>
+        {//--- import modal
+          this.props.appState.isImportModalDisplayed &&
+          <div
+            className={['modal', this.props.appState.isImportModalDisplayed ? 'is-active' : ''].join(' ')}>
+            <div className="modal-background"
+                 onClick={() => this.props.appState.closeImportModal()}></div>
+            <div className="modal-content">
+              <div className="box">
+                <ImportArea appState={this.props.appState}/>
+              </div>
+            </div>
+            <button className="modal-close is-large" aria-label="close"
+                    onClick={() => this.props.appState.closeImportModal()}></button>
+          </div>
+
         }
 
-        {
-          this.props.appState.isExportAreaDisplayed &&
-          <ExportArea appState={this.props.appState}/>
+
+        {//--- export modal
+          this.props.appState.isExportModalDisplayed &&
+          <div
+            className={['modal', this.props.appState.isExportModalDisplayed ? 'is-active' : ''].join(' ')}>
+            <div className="modal-background"
+                 onClick={() => this.props.appState.closeExportModal()}></div>
+            <div className="modal-content">
+              <div className="box">
+                <ExportArea appState={this.props.appState}/>
+              </div>
+            </div>
+            <button className="modal-close is-large" aria-label="close"
+                    onClick={() => this.props.appState.closeExportModal()}></button>
+          </div>
         }
 
         {

@@ -23,8 +23,9 @@ class ImportArea extends React.Component<Props, any> {
 
   render(): JSX.Element {
     return (
-      <div className="input-area">
+      <div>
 
+        <h4 className="title is-3">Import</h4>
 
         <div>
         <textarea className="textarea" style={{width: '500px', height: '200px', marginBottom: '1em'}}

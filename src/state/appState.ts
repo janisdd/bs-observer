@@ -25,6 +25,8 @@ export class AppState {
 
   @observable isCompareSeriesBaseUrlsModalDisplayed = false
 
+  @observable isExportModalDisplayed = false
+
   @observable compareSeriesUrlsText: string = ``
 
   @observable isLoaderDisplayed = false
@@ -32,6 +34,11 @@ export class AppState {
   @observable isInputAreaDisplayed = false
 
   @observable isFilterAreaDisplayed = false
+
+  /**
+   * the scroll y
+   */
+  @observable scrollYObserved: number = 0
 
   @observable searchText = ''
 
@@ -41,8 +48,7 @@ export class AppState {
   @observable currentProgressVal = 0
   @observable maxProgressVal = 0
 
-  @observable isExportAreaDisplayed = false
-  @observable isImportAreaDisplayed = false
+  @observable isImportModalDisplayed = false
 
   /**
    * the state to export as string
@@ -84,6 +90,11 @@ export class AppState {
   }
 
   //--- actions
+
+  @action
+  setScrollYObserved(scrollY: number) {
+    this.scrollYObserved = scrollY
+  }
 
   @action
   setShowOnlyIgnoredFilter(showOnlyIgnored: boolean) {
@@ -143,7 +154,7 @@ export class AppState {
       return
     }
     DialogHelper.show('Importiert', 'Zustand wurde importiert & gespeichert')
-    this.isImportAreaDisplayed = false
+    this.isImportModalDisplayed = false
 
     //maybe we imported the wrong one and want to rollback...? --> let the user manually save
     this.writeState()
@@ -173,8 +184,7 @@ export class AppState {
     if (isDisplayed === true) {
       // this.isInputAreaDisplayed = false
       this.isFilterAreaDisplayed = false
-      this.isExportAreaDisplayed = false
-      this.isImportAreaDisplayed = false
+      this.isImportModalDisplayed = false
     }
   }
 
@@ -185,40 +195,10 @@ export class AppState {
     if (isDisplayed === true) {
       this.isInputAreaDisplayed = false
       // this.isFilterAreaDisplayed = false
-      this.isExportAreaDisplayed = false
-      this.isImportAreaDisplayed = false
+      this.isImportModalDisplayed = false
     }
   }
 
-  @action
-  setIsExportAreaDisplayed(isDisplayed: boolean) {
-    this.isExportAreaDisplayed = isDisplayed
-
-    if (isDisplayed === true) {
-      this.isInputAreaDisplayed = false
-      this.isFilterAreaDisplayed = false
-      // this.isExportAreaDisplayed = false
-      this.isImportAreaDisplayed = false
-
-      this.refreshExportStateString()
-    }
-    else {
-      this.exportString = ''
-      this.exportStringSizeString = ''
-    }
-  }
-
-  @action
-  setIsImportAreaDisplayed(isDisplayed: boolean) {
-    this.isImportAreaDisplayed = isDisplayed
-
-    if (isDisplayed === true) {
-      this.isInputAreaDisplayed = false
-      this.isFilterAreaDisplayed = false
-      this.isExportAreaDisplayed = false
-      // this.isImportAreaDisplayed = false
-    }
-  }
 
   @action
   setIsLoaderDisplayed(isDisplayed: boolean) {
@@ -227,8 +207,6 @@ export class AppState {
     if (isDisplayed) {
       //make sure all is collapsed
       this.setIsInputAreaDisplayed(false)
-      this.setIsImportAreaDisplayed(false)
-      this.setIsExportAreaDisplayed(false)
       this.setIsFilterAreaDisplayed(false)
 
     }
@@ -294,6 +272,30 @@ export class AppState {
   closeCompareSeriesBaseUrlsModal() {
     this.isCompareSeriesBaseUrlsModalDisplayed = false
   }
+
+  @action
+  openExportModal() {
+    this.isExportModalDisplayed = true
+    this.refreshExportStateString()
+  }
+
+  @action
+  closeExportModal() {
+    this.isExportModalDisplayed = false
+    this.exportString = ''
+    this.exportStringSizeString = ''
+  }
+
+  @action
+  openImportModal() {
+    this.isImportModalDisplayed = true
+  }
+  @action
+  closeImportModal() {
+    this.isImportModalDisplayed = false
+  }
+
+
 
   @action
   compareBaseUrlLists(): void {

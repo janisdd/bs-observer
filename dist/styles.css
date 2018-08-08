@@ -329,6 +329,12 @@ body {
   margin: 1em;
   text-align: end;
 }
+.go-to-top-button {
+  border-radius: 2000000px;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+}
 .clickable {
   opacity: 0.7 !important;
   cursor: pointer !important;
@@ -707,6 +713,12 @@ body {
   font-weight: 100;
   margin: 1em;
   text-align: end;
+}
+.go-to-top-button {
+  border-radius: 2000000px;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
 }
 .loader-wrapper {
   position: relative;

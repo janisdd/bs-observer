@@ -13,6 +13,21 @@ interface Props {
 @observer
 class ListOutputArea extends React.Component<Props, any> {
 
+
+  observeScrollXHandle: number = 0
+
+  componentDidMount() {
+
+    this.observeScrollXHandle = setInterval(() => {
+      console.log(window.scrollY)
+      this.props.appState.setScrollYObserved(window.scrollY)
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.observeScrollXHandle)
+  }
+
   getSearchResults(series: Series[]): Series[] {
 
     let searchText = this.props.appState.searchText.toLowerCase()
@@ -92,7 +107,9 @@ class ListOutputArea extends React.Component<Props, any> {
                 <i className="fas fa-save"></i>
               </span>
 
+              <span style={{verticalAlign: 'top'}}>
               {FormatterHelper.getDateAsString(this.props.appState.lastSavedAt)} - {FormatterHelper.getTimeAsString(this.props.appState.lastSavedAt)}
+              </span>
             </div>
           }
 
@@ -122,9 +139,11 @@ class ListOutputArea extends React.Component<Props, any> {
               </div>
 
               <div>
-                <a className={['button', 'is-white', this.props.appState.isCancelCaptureStateRequested ? 'div-disabled' : ''].join(' ')} onClick={() => {
-                  this.props.appState.setsIsCancelCaptureStateRequested(true)
-                }}>Abbrechen</a>
+                <a
+                  className={['button', 'is-white', this.props.appState.isCancelCaptureStateRequested ? 'div-disabled' : ''].join(' ')}
+                  onClick={() => {
+                    this.props.appState.setsIsCancelCaptureStateRequested(true)
+                  }}>Abbrechen</a>
               </div>
 
             </div>
@@ -170,6 +189,23 @@ class ListOutputArea extends React.Component<Props, any> {
                   })
                 }
               </div>
+
+              {
+                this.props.appState.scrollYObserved > (window.innerHeight/2) &&
+                <a className="button go-to-top-button is-medium" onClick={() => {
+                  window.scrollTo({
+                    behavior: "smooth",
+                    top: 0,
+                    left: 0
+                  })
+                }}>
+                <span className="icon is-medium">
+                <i className="fas fa-angle-up"></i>
+                </span>
+                </a>
+              }
+
+
             </div>
           }
 

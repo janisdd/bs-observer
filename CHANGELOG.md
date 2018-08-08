@@ -1,5 +1,7 @@
 # Changelog
 
+- [feature] added back to top button (not so smooth on safari)
+- [improved] export & import are now dialogs so we don't need to go back to the very top
 - [fixed] when an all watched eng/ger season was opened the visual didn't change
 - [feature] added feature to compare the local series list against an external list to see which series we are missing
   - then displaying the missing series in a modal

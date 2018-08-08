@@ -13,8 +13,9 @@ class ExportArea extends React.Component<Props, any> {
 
   render(): JSX.Element {
     return (
-      <div className="input-area">
+      <div>
 
+        <h4 className="title is-3">Export</h4>
 
         <h4 className="title is-4">Status</h4>
 

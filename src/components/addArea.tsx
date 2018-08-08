@@ -11,7 +11,7 @@ interface Props {
 
 
 @observer
-class InputArea extends React.Component<Props, any> {
+class AddArea extends React.Component<Props, any> {
 
 
   componentDidMount() {
@@ -121,4 +121,4 @@ class InputArea extends React.Component<Props, any> {
   }
 }
 
-export default InputArea
+export default AddArea
