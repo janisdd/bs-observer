@@ -1,5 +1,11 @@
 # Changelog
 
+- [changed] changed the semantics of watched states (for ger)(badges)
+  - when a series has no translated seasons the then it can't be watched (no badge) / previous we handled seasons separately, now the whole series
+  - when there are untranslated episodes, they are not taken into account for the watched badge
+  - this way it's easier to see if some not watched season (greyed season background) is partially translated (then there is no badge)
+    or not translated at all (then there should be an badge if you watched all translated seasons with episodes)
+    - in easy words: if there is the watched all ger... badge then you have watched all translated episodes
 - [feature] added back to top button (not so smooth on safari)
 - [improved] export & import are now dialogs so we don't need to go back to the very top
 - [fixed] when an all watched eng/ger season was opened the visual didn't change

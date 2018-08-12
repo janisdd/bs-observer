@@ -290,11 +290,11 @@ export class AppState {
   openImportModal() {
     this.isImportModalDisplayed = true
   }
+
   @action
   closeImportModal() {
     this.isImportModalDisplayed = false
   }
-
 
 
   @action
@@ -642,13 +642,18 @@ export class AppState {
   /**
    * checks if we watched all ger/eng episodes
    *
-   * if some are not translated then we use not watched
+   * if some are not translated then we use watched (BUT we need at least one episode to be translated)
+   * this is easier if we want to see if there are still seasons not translated
+   * e.g. we watched some translated seasons but the last ones are not translated
    * @param {Series} series
-   * @param {boolean} eng
+   * @param {boolean} eng true: eng, false: ger
    * @param {boolean} excludeSpecials
    * @returns {boolean}
    */
   getHasWatchedAll(series: Series, eng: boolean, excludeSpecials = true): boolean {
+
+    //return if we found a not watched episode
+
 
     for (const season of series.seasons) {
 
@@ -657,19 +662,23 @@ export class AppState {
       }
 
       if (eng) {
+        //this should not happen because eng is always added before ger ??
         const allEmpty = season.episodes.every(p => p.name_en === '')
         //if nothing is there we cannot have watched it...
         if (allEmpty) {
-          return false
+          return true
         }
 
       }
       else {
-        const allEmpty = season.episodes.every(p => p.name_ger === null)
-        //if nothing is there we cannot have watched it...
-        if (allEmpty) {
-          return false
-        }
+
+        // atLeastOnGerWatched = season.episodes.some(p => p.watchedGer)
+        //
+        // const allEmpty = season.episodes.every(p => p.name_ger === null)
+        // //if nothing is there we cannot have watched it...
+        // if (allEmpty && atLeastOnGerWatched) {
+        //   return true
+        // }
       }
 
 
@@ -682,7 +691,7 @@ export class AppState {
         if (!eng && episode.watchedGer === false) {
 
           if (episode.name_ger === null) {
-            //ger is not yet reads so this is ok
+            //ger is not yet available so this is ok
             continue
           }
 
@@ -691,6 +700,15 @@ export class AppState {
 
       }
     }
+
+    //if all seasons are untranslated then don't show that we watched all...
+
+    if (series.seasons
+      .filter(p => excludeSpecials && p.seasonId !== '0')
+      .every(p => p.episodes.every(p => p.name_ger === null))) {
+      return false
+    }
+
 
     return true
   }

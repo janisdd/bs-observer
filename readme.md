@@ -36,18 +36,18 @@ Etwas unübersichtlich/unstrukturiert, erklärt aber fast alle Funktionen
 
 - Hat man von einer Serie alle Folgen gesehen, wird das ebenfalls angezeigt (Specials werden dabei ignoriert)
   - Hierfür gibt es ebenfalls einen Filter (zeige alle noch nicht gesehen...)
-  - Wurde eine Serie noch nicht vollständig übersetzt, zählt sie als noch nicht vollständig gesehen
-    - Das hat den Sinn, dass man leichter sieht, welche Serien noch nicht vollständig übersetzt wurden (kann sich aber ändern)
+  - Dies gibt es für die englischen und deutschen Varianten separat (Alle Deu gesehen / Alle Eng gesehen)
+    - Diese *Badges* zeigen an, dass man alle verfügbaren (übersetzen bei ger) Episoden gesehen hat
 
 - Man kann Serien auch mittels des Bookmark-Symbols markieren, diese werden dann vor allen anderen Serien angezeigt
   - Praktisch, wenn man mehrere Serien gleichzeitig guckt
 
 **Hinweise**
 
-- Der globale Zustand wird im `localStorage` des Browsers gespeichert, `localStorage` ist in der *same origin* verfügbar, wie ist das bei lokalen Dateien??
+- Der globale Zustand wird im `localStorage` des Browsers gespeichert, `localStorage` ist in der *same origin* verfügbar, wie ist das bei lokalen Dateien (z.B. nach Verschieben)??
   - Da es sich um eine lokale Datei handelt (index.html) ist es schwer zu sagen, wann es sich um die "gleiche Datei" für den Browser handelt
     - Aus diesem Grund kann es unterschiedliche Gründe haben, dass der globale Zustand **nicht mehr gefunden wird**
-    --> Daher wäre es ratsam, dass man **vor** dem schließen der Seite den Zustand exportiert (den Text in eine Datei speichert)
+    --> Daher wäre es ratsam, dass man **vor** dem Schließen der Seite den Zustand exportiert (den Text in eine Datei speichert)
   - Solange die Datei (index.html) nicht umbenannt oder verschoben wird, **sollte** das aber kein Problem sein
   - `localStorage` hat außerdem ein Größenlimit, was von Browser zu Browser verschieden ist, ca. 5 MB kann als Orientierung dienen
     - Der Backup-Zustand nimmt ca. den gleichen Platz ein, d.h. wenn bei Export um die ~2.5 MB steht, kann es in nächster Zeit passieren, dass der Zustand nicht mehr gespeichert werden kann
