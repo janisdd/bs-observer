@@ -3,6 +3,7 @@ import {observer} from "mobx-react"
 import ListOutputItem from "./listOutputItem";
 import {AppState} from "../../state/appState";
 import {FormatterHelper} from "../../helpers/formatterHelper";
+import ImportArea from "../importArea";
 
 
 interface Props {
@@ -19,7 +20,6 @@ class ListOutputArea extends React.Component<Props, any> {
   componentDidMount() {
 
     this.observeScrollXHandle = setInterval(() => {
-      console.log(window.scrollY)
       this.props.appState.setScrollYObserved(window.scrollY)
     }, 1000)
   }
@@ -117,41 +117,51 @@ class ListOutputArea extends React.Component<Props, any> {
 
         <div>
           {
-            this.props.appState.isLoaderDisplayed &&
-            <div style={{padding: '3em', width: '100%'}}>
-              <div className="loader-wrapper">
-                <div id="preloader">
-                  <div id="loader"/>
+            // this.props.appState.isLoaderDisplayed &&
+            <div
+              className={['modal', this.props.appState.isLoaderDisplayed ? 'is-active' : ''].join(' ')}>
+              <div className="modal-background"></div>
+              <div className="modal-content" style={{width: '90%'}}>
+                <div className="box">
+
+                  <div style={{padding: '3em', width: '100%'}}>
+                    <div className="loader-wrapper">
+                      <div id="preloader">
+                        <div id="loader"/>
+                      </div>
+                    </div>
+                    <progress className="progress is-success"
+                              value={this.props.appState.currentProgressVal * 100 / this.props.appState.maxProgressVal}
+                              max="100"/>
+
+                    <div style={{textAlign: 'center'}}>
+                      {
+                        this.props.appState.currentProgressVal
+                      }
+                      /
+                      {
+                        this.props.appState.maxProgressVal
+                      }
+                    </div>
+
+                    <div>
+                      <a
+                        className={['button', 'is-white', this.props.appState.isCancelCaptureStateRequested ? 'div-disabled' : ''].join(' ')}
+                        onClick={() => {
+                          this.props.appState.setsIsCancelCaptureStateRequested(true)
+                        }}>Abbrechen</a>
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
-              <progress className="progress is-success"
-                        value={this.props.appState.currentProgressVal * 100 / this.props.appState.maxProgressVal}
-                        max="100"/>
-
-              <div style={{textAlign: 'center'}}>
-                {
-                  this.props.appState.currentProgressVal
-                }
-                /
-                {
-                  this.props.appState.maxProgressVal
-                }
-              </div>
-
-              <div>
-                <a
-                  className={['button', 'is-white', this.props.appState.isCancelCaptureStateRequested ? 'div-disabled' : ''].join(' ')}
-                  onClick={() => {
-                    this.props.appState.setsIsCancelCaptureStateRequested(true)
-                  }}>Abbrechen</a>
-              </div>
-
             </div>
           }
 
 
           {
-            this.props.appState.isLoaderDisplayed === false && markedSeries.length > 0 &&
+            markedSeries.length > 0 &&
             <div>
               <h1 className="series-list-title">Markierte Serien</h1>
               <div className="series-list">
@@ -174,7 +184,7 @@ class ListOutputArea extends React.Component<Props, any> {
           }
 
           {
-            this.props.appState.isLoaderDisplayed === false && notMarkedSeries.length > 0 &&
+            notMarkedSeries.length > 0 &&
             <div>
               <h1 className="series-list-title">Serien</h1>
 

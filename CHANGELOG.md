@@ -1,5 +1,7 @@
 # Changelog
 
+- [improved] loading is now a modal
+  - so when one refreshes a series (or check all for new data) then the scroll position is saved
 - [changed] changed the semantics of watched states (for ger)(badges)
   - when a series has no translated seasons the then it can't be watched (no badge) / previous we handled seasons separately, now the whole series
   - when there are untranslated episodes, they are not taken into account for the watched badge

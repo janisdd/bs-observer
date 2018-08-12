@@ -2,6 +2,15 @@ import axios from 'axios'
 import {AppState} from "../state/appState";
 
 export class Capture {
+
+  /**
+   * catpures the state of the given series via the base urls
+   * @param baseUrls
+   * @param seriesToIgnore
+   * @param onOneCaptureFinished
+   * @param appState the app state too access
+   *   @link AppState.isCancelCaptureStateRequested
+   */
   public static async capture(baseUrls: string[], seriesToIgnore: Series[], onOneCaptureFinished: (numFinished: number) => void, appState: AppState): Promise<Series[]> {
 
     const now = new Date()
@@ -45,9 +54,9 @@ export class Capture {
 
 
   /**
-   *
+   * gets the series data from a base url
    * @param {string} baseUrl e.g. https://bs.to/serie/Sword-Art-Online
-   * @param queryDate
+   * @param queryDate the date when this data was queried (use the same date for multiple queries if we check multiple, so pass as arg)
    * @returns {Promise<Series>}
    */
   public static async getSeriesState(baseUrl: string, queryDate: Date): Promise<Series> {
