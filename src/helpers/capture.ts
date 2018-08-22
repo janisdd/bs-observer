@@ -128,7 +128,7 @@ export class Capture {
       let document = response.data as any as Document//parser.parseFromString(response.data, 'text/html')
 
       //get the a's (urls) with the episode name
-      const result = document.evaluate("//table[@class='episodes']//a[not(@class) and count(./child::*) != 0]", document, null, XPathResult.ANY_TYPE, null)
+      const result = document.evaluate("//table[@class='episodes']//td[2]//a[not(@class) and count(./child::*) != 0]", document, null, XPathResult.ANY_TYPE, null)
 
       while ((node = result.iterateNext()) !== null) {
         const el = node as HTMLAnchorElement
