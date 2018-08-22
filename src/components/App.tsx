@@ -7,6 +7,7 @@ import FilterArea from "./filterArea";
 import ExportArea from "./exportArea";
 import {DialogHelper} from "../helpers/dialogHelper";
 import ImportArea from "./importArea";
+import Loader from "./helpers/loader";
 
 const ReactNotifications = require('react-notifications/dist/react-notifications')
 
@@ -219,6 +220,10 @@ class App extends React.Component<Props, any> {
           <FilterArea appState={this.props.appState}/>
         }
 
+        {
+          this.props.appState.isLoadingState &&
+          <Loader/>
+        }
 
         <ListOutputArea appState={this.props.appState}/>
 

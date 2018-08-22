@@ -9,6 +9,9 @@ const ReactNotifications = require('react-notifications/dist/react-notifications
 
 
 export class AppState {
+
+  @observable isLoadingState = true
+
   /**
    * not normalized
    * e.g. https://bs.to/serie/The-Asterisk-War/1
@@ -549,18 +552,23 @@ export class AppState {
   @action
   async rollbackState() {
 
+    this.isLoadingState = true
     let lastState: ExportAppState | null = null
 
     try {
       lastState = await FrontendManager.readBackupState()
     } catch (err) {
       console.error(err)
+      runInAction(() => {
+        this.isLoadingState = false
+      })
       ReactNotifications.NotificationManager.error('Backup-Zustand konnte nicht geladen werden')
       return
     }
 
     if (lastState === null) {
       //no last state do nothing
+      this.isLoadingState = false
       return
     }
 
@@ -568,6 +576,7 @@ export class AppState {
       this.series = (lastState as ExportAppState).series
       this.lastSavedAt = (lastState as ExportAppState).createdAt
       console.log(`loaded backup state (${this.series.length})`)
+      this.isLoadingState = false
     })
   }
 
@@ -587,11 +596,16 @@ export class AppState {
   async loadLastState() {
 
     let lastState: ExportAppState | null = null
+    this.isLoadingState = true
 
     try {
       lastState = await FrontendManager.readSeries()
     } catch (err) {
       console.error(err)
+      runInAction(() => {
+        this.isLoadingState = false
+      })
+
       ReactNotifications.NotificationManager.error('Zustand konnte nicht geladen werden')
       return
     }
@@ -602,12 +616,14 @@ export class AppState {
 
       if (lastState === null) {
         //no last state do nothing
+        this.isLoadingState = false
         return
       }
 
       this.series = (lastState as ExportAppState).series
       this.lastSavedAt = (lastState as ExportAppState).createdAt
       console.log(`loaded old series (${this.series.length})`)
+      this.isLoadingState = false
     })
   }
 

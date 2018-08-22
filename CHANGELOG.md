@@ -1,5 +1,6 @@
 # Changelog
 
+- [improved] when the state is loaded from the disk (or rollback) then we display a loader
 - [improved] loading is now a modal
   - so when one refreshes a series (or check all for new data) then the scroll position is saved
 - [changed] changed the semantics of watched states (for ger)(badges)
