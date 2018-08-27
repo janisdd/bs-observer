@@ -72,7 +72,7 @@ export class SeriesComparer {
     if (showNotifications) {
 
       if (numHasSomethingNew > 0) {
-        DialogHelper.show('Neuigkeiten', `Es gibt ${numHasSomethingNew} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden`)
+        DialogHelper.show('Neuigkeiten', `Es gibt ${numHasSomethingNew} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand wurde nicht automatisch gespeichert!`)
       }
       else {
         DialogHelper.show('','Keine Neuigkeiten')

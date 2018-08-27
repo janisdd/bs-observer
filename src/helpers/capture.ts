@@ -35,6 +35,7 @@ export class Capture {
         const _series = await this.getSeriesState(baseUrl, now)
         series.push(_series)
         console.log('finished capture for: ' + baseUrl)
+        console.log(_series)
         captureCount++
         onOneCaptureFinished(captureCount)
       } catch (err) {

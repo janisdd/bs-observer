@@ -327,12 +327,11 @@ class ListOutputItem extends React.Component<Props, any> {
                                   </span>
                                 }
                                 {
-                                  episode.state === null &&
+                                  (episode.state === null || episode.state === "gerAdded") &&
                                   <span>
                                     {episode.name_en}
                                   </span>
                                 }
-
                               </td>
                               <td>
 

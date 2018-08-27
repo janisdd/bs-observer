@@ -1,5 +1,8 @@
 # Changelog
 
+- we now notify the user that on single refresh series the state is not automatically saved
+- [fixed] issue where in the the import dialog the size was not displayed
+- [fixed] issue where the english name was not displayed when a ger translation was added and we knew the english name already
 - [fixed] bs changed the way they represent the season overview ... changed the capture to match these changes
 - [improved] when the state is loaded from the disk (or rollback) then we display a loader
 - [improved] loading is now a modal

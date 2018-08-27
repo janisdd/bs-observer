@@ -136,8 +136,8 @@ export class AppState {
   @action
   setImportString(text: string) {
     this.importString = text
-    // const bytes = (new (TextEncoder as any)('utf-8').encode(text)).length
-    // this.importStringSizeString = FrontendManager.humanFileSize(bytes)
+    const bytes = (new (TextEncoder as any)('utf-8').encode(text)).length
+    this.importStringSizeString = FrontendManager.humanFileSize(bytes)
   }
 
   @action
