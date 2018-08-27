@@ -1,5 +1,9 @@
 # Changelog
 
+- renamed all 'Status' --> 'Zustand'
+- changed all error notifications to dialogs
+  - we only use notifications for small success messages (or should we even display if everything is alright?)
+    - save should not be called that often so i think it's ok
 - we now notify the user that on single refresh series the state is not automatically saved
 - [fixed] issue where in the the import dialog the size was not displayed
 - [fixed] issue where the english name was not displayed when a ger translation was added and we knew the english name already

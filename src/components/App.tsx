@@ -156,7 +156,7 @@ class App extends React.Component<Props, any> {
                      return
                    }
 
-                   const shouldDelete = await DialogHelper.askDialog('Zustand löschen', 'Status wirklisch löschen? Dadurch werden alle gespeicherten Informationn & Serien gelöscht')
+                   const shouldDelete = await DialogHelper.askDialog('Zustand löschen', "Zustand wirklisch löschen? Dadurch werden alle gespeicherten Informationn & Serien gelöscht. Unter 'Import' kann der letzte Zustand wiederhergestellt werden.")
 
                    if (shouldDelete) {
                      this.props.appState.clearSavedState()

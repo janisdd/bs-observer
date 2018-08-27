@@ -226,7 +226,7 @@ export class AppState {
       })
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Zustand konnte nicht gelöscht werden')
+      DialogHelper.error('','Zustand konnte nicht gelöscht werden')
       return
     }
 
@@ -534,7 +534,7 @@ export class AppState {
 
     } catch (err) {
       console.error(err)
-      ReactNotifications.NotificationManager.error('Zustand konnte nicht gespeichert werden')
+      DialogHelper.error('','Zustand konnte nicht gespeichert werden')
       return
     }
 
@@ -562,7 +562,7 @@ export class AppState {
       runInAction(() => {
         this.isLoadingState = false
       })
-      ReactNotifications.NotificationManager.error('Backup-Zustand konnte nicht geladen werden')
+      DialogHelper.error('','Backup-Zustand konnte nicht geladen werden')
       return
     }
 
@@ -577,6 +577,7 @@ export class AppState {
       this.lastSavedAt = (lastState as ExportAppState).createdAt
       console.log(`loaded backup state (${this.series.length})`)
       this.isLoadingState = false
+      DialogHelper.error('', 'Backup-Zustand wurde geladen. Der Zustand wurde nicht automatisch gespeichert.')
     })
   }
 
@@ -606,7 +607,7 @@ export class AppState {
         this.isLoadingState = false
       })
 
-      ReactNotifications.NotificationManager.error('Zustand konnte nicht geladen werden')
+      DialogHelper.error('','Zustand konnte nicht geladen werden')
       return
     }
 

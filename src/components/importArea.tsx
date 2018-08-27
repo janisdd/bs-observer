@@ -48,7 +48,7 @@ class ImportArea extends React.Component<Props, any> {
 
              }}
           >
-            Import Status
+            Importiere Zustand
           </a>
 
 
@@ -68,7 +68,7 @@ class ImportArea extends React.Component<Props, any> {
           <span className="icon">
             <i className="fas fa-undo"></i>
           </span>
-              <span>Vorherigen Status wiederverstellen</span>
+              <span>Vorherigen Zustand wiederverstellen</span>
             </a>
           }
 

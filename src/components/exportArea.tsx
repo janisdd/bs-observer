@@ -17,7 +17,11 @@ class ExportArea extends React.Component<Props, any> {
 
         <h4 className="title is-3">Export</h4>
 
-        <h4 className="title is-4">Status</h4>
+        <div style={{marginBottom: '1em'}}>
+          Es wird der aktuelle Zustand exportiert (nicht der gespeicherte Zustand)!
+        </div>
+
+        <h4 className="title is-4">Zustand</h4>
 
         <span className="icon has-text-info icon-margin clickable tooltip is-tooltip-right"
               data-tooltip="In Zwischenablage kopieren"
