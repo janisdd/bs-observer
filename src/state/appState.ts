@@ -226,7 +226,7 @@ export class AppState {
       })
     } catch (err) {
       console.error(err)
-      DialogHelper.error('','Zustand konnte nicht gelöscht werden')
+      DialogHelper.error('', 'Zustand konnte nicht gelöscht werden')
       return
     }
 
@@ -298,7 +298,6 @@ export class AppState {
   closeImportModal() {
     this.isImportModalDisplayed = false
   }
-
 
 
   @action
@@ -413,7 +412,12 @@ export class AppState {
 
         this.writeState()
 
-        DialogHelper.show('', `${newSeriesBaseUrls.length} serien hinzugefügt, ${alreadyKnownSeries} bereits vorhanden oder doppelt.`)
+        const message =
+          alreadyKnownSeries === 0 ?
+            `${newSeriesBaseUrls.length} Serien hinzugefügt. Der Zustand wurde gespeichert.`
+            : `${newSeriesBaseUrls.length} Serien hinzugefügt, ${alreadyKnownSeries} bereits vorhanden oder doppelt. Der Zustand wurde gespeichert.`
+
+        DialogHelper.show('', message)
       })
     }, 500)
 
@@ -423,15 +427,15 @@ export class AppState {
   /**
    * checks all series we got for changes
    * @param {Series[]} oldSeries
-   * @param {boolean} overwriteSeries true: the old series will replace the current series in the state (respect the ignore compare series),
-   * false: only compare the given and replace the series states of the given series ignore the ignore compare series (in case you want to update only a couple series)
+   * @param {boolean} overwriteSeries true: the old series will replace the current series in the state (respect the ignore compare series prop),
+   * false: only compare the given and replace the series states of the given series, ignores the ignore compare series prop (in case you want to update only a couple series)
    * @returns {Promise<void>}
    */
   @action
   async captureBsStateFromOld(oldSeries: Series[], overwriteSeries: boolean): Promise<void> {
 
 
-    let series: Series[] = []
+    let capturedSeries: Series[] = []
     let seriesBaseUrls = oldSeries.map(p => p.baseUrl)
     let seriesFinishedCount = 0
 
@@ -449,7 +453,7 @@ export class AppState {
     this.setIsLoaderDisplayed(true)
 
     try {
-      series = await Capture.capture(seriesBaseUrls,
+      capturedSeries = await Capture.capture(seriesBaseUrls,
         seriesToIgnore,
         (numFinished) => {
           seriesFinishedCount = numFinished
@@ -483,27 +487,33 @@ export class AppState {
     setTimeout(() => {
       runInAction(() => {
 
+
+        oldSeries = this.series
         if (overwriteSeries) {
 
-          this.oldSeries = this.series
-          this.series = series
+          this.series = capturedSeries
 
-          //compares the old and the current series and adds states to the current series
-          SeriesComparer.compareSeries(this.oldSeries, this.series, [])
+          //compares the old and the current series and carries the old series states to the new captured series
+          const numChangedSeries = SeriesComparer.compareSeries(oldSeries, this.series, [])
 
           this.writeState()
+
+          if (numChangedSeries > 0) {
+            DialogHelper.show('Neuigkeiten', `Es gibt ${numChangedSeries} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand wurde automatisch gespeichert.`)
+          }
+          else {
+            DialogHelper.show('', 'Keine Neuigkeiten')
+          }
 
         }
         else {
 
-          oldSeries = this.series
-          const capturedSeries = series
 
           //compares the old and the current series and adds states to the current series
-          SeriesComparer.compareSeries(oldSeries, capturedSeries, [])
+          const numChangedSeries  = SeriesComparer.compareSeries(oldSeries, capturedSeries, [])
 
 
-          //then replace the updates series
+          //then replace the current series with the update series
           for (const singleSeries of capturedSeries) {
             const oldSingleSeriesIndex = this.series.findIndex(p => p.baseUrl === singleSeries.baseUrl)
 
@@ -513,6 +523,13 @@ export class AppState {
             }
 
             this.series.splice(oldSingleSeriesIndex, 1, singleSeries)
+          }
+
+          if (numChangedSeries > 0) {
+            DialogHelper.show('Neuigkeiten', `Es gibt ${numChangedSeries} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand muss manuell gespeichert werden.`)
+          }
+          else {
+            DialogHelper.show('', 'Keine Neuigkeiten')
           }
         }
 
@@ -534,7 +551,7 @@ export class AppState {
 
     } catch (err) {
       console.error(err)
-      DialogHelper.error('','Zustand konnte nicht gespeichert werden')
+      DialogHelper.error('', 'Zustand konnte nicht gespeichert werden')
       return
     }
 
@@ -562,7 +579,7 @@ export class AppState {
       runInAction(() => {
         this.isLoadingState = false
       })
-      DialogHelper.error('','Backup-Zustand konnte nicht geladen werden')
+      DialogHelper.error('', 'Backup-Zustand konnte nicht geladen werden')
       return
     }
 
@@ -607,7 +624,7 @@ export class AppState {
         this.isLoadingState = false
       })
 
-      DialogHelper.error('','Zustand konnte nicht geladen werden')
+      DialogHelper.error('', 'Zustand konnte nicht geladen werden')
       return
     }
 
@@ -786,11 +803,6 @@ export class AppState {
 
     return seriesBaseUrls
   }
-
-  /**
-   * the old series we previously captured (used to compare)
-   */
-  @observable oldSeries: Series[] = []
 
   /**
    * the new series we captured

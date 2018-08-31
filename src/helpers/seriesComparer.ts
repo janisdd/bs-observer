@@ -24,12 +24,11 @@ export class SeriesComparer {
 
   /**
    * calcs a diff between old series and the (new) series
-   * @param {Series[]} oldSeries
-   * @param {Series[]} series
+   * @param {Series[]} oldSeries the old series
+   * @param {Series[]} series the new series... we will preserve the state of the old series if found
    * @param {Series[]} removedSeries out param for the series that were removed from the (new) series compared to the old ones
-   * @param showNotifications
    */
-  public static compareSeries(oldSeries: Series[], series: Series[], removedSeries: Series[], showNotifications: boolean = true): void {
+  public static compareSeries(oldSeries: Series[], series: Series[], removedSeries: Series[]): number {
 
 
     let numHasSomethingNew = 0
@@ -69,17 +68,7 @@ export class SeriesComparer {
       singleSeries.state = 'new'
     }
 
-    if (showNotifications) {
-
-      if (numHasSomethingNew > 0) {
-        DialogHelper.show('Neuigkeiten', `Es gibt ${numHasSomethingNew} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand wurde nicht automatisch gespeichert!`)
-      }
-      else {
-        DialogHelper.show('','Keine Neuigkeiten')
-      }
-
-
-    }
+    return numHasSomethingNew;
 
   }
 
