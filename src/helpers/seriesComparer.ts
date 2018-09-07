@@ -51,6 +51,7 @@ export class SeriesComparer {
       //preserve
       newSingleSeries.state = oldSingleSeries.state
       newSingleSeries.isMarked = oldSingleSeries.isMarked
+      newSingleSeries.selectedSeasonId = oldSingleSeries.selectedSeasonId
 
       const res = this.compareSingleSeries(oldSingleSeries, newSingleSeries)
 

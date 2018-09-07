@@ -1,5 +1,6 @@
 # Changelog
 
+- refreshing single series and all series (compare series) will now preserve the opened season
 - renamed all 'Status' --> 'Zustand'
 - changed all error notifications to dialogs
   - we only use notifications for small success messages (or should we even display if everything is alright?)
