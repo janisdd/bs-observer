@@ -186,7 +186,7 @@ class ListOutputItem extends React.Component<Props, any> {
               <div className="content">
 
                 <div className="sticky-pos series-title-and-seasons" style={{top: '3em'}}>
-                  <a style={{fontSize: '1.5em', fontWeight: 'bold'}} href={this.props.series.baseUrl} target="_blank">
+                  <a style={{fontSize: '1.5em', fontWeight: 'bold'}} href={this.props.series.selectedSeasonId === null ? this.props.series.baseUrl : `${this.props.series.baseUrl}/${this.props.series.selectedSeasonId}`} target="_blank">
                     {
                       this.props.series.name
                     }

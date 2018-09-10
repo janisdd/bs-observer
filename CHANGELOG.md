@@ -1,5 +1,6 @@
 # Changelog
 
+- [improved] if a season of a series is selected and we click the link (series name) then we open the selected season
 - refreshing single series and all series (compare series) will now preserve the opened season
 - renamed all 'Status' --> 'Zustand'
 - changed all error notifications to dialogs
