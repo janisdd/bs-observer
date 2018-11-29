@@ -10,7 +10,7 @@
   "author": "janis daehne",
   "license": "MIT",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.1.1",
+    "@fortawesome/fontawesome-free": "5.1.1",
     "@types/jest": "22.2.3",
     "@types/lodash": "4.14.110",
     "@types/react": "15.6.1",
