@@ -2,6 +2,7 @@ import * as React from "react";
 import {observer} from "mobx-react"
 import {AppState} from "../state/appState";
 import {ChangeEvent} from "react";
+import {DialogHelper} from '../helpers/dialogHelper'
 
 
 interface Props {
@@ -40,17 +41,37 @@ class FilterArea extends React.Component<Props, any> {
               </p>
             </div>
 
-            <div>
-              <a className="button is-white" onClick={() => {
-                this.props.appState.collapseAllSeries()
-              }}>
-                <span>Alle zuklappen</span>
+            <div className="flexed">
+              <div>
+                <a className="button is-white" onClick={() => {
+                  this.props.appState.collapseAllSeries()
+                }}>
+                  <span>Alle zuklappen</span>
 
-                <span className="icon has-text-info tooltip"
-                      data-tooltip="Klappt alle Staffeln von allen Serien zu">
+                  <span className="icon has-text-info tooltip"
+                        data-tooltip="Klappt alle Staffeln von allen Serien zu">
                 <i className="fas fa-info-circle"/>
               </span>
-              </a>
+                </a>
+              </div>
+
+              <div className="mar-left">
+                <a className="button is-white" onClick={async () => {
+
+                  const shouldReset = await DialogHelper.askDialog('', 'Wirklich alle Neuigkeiten zurücksetzen?')
+
+                  if (!shouldReset) return
+
+                  this.props.appState.resetNewForAllSeries()
+                }}>
+                  <span>Alle news resetten</span>
+
+                  <span className="icon has-text-info tooltip"
+                        data-tooltip="Setzt den Zustand aller News auf gesehen">
+                <i className="fas fa-info-circle"/>
+              </span>
+                </a>
+              </div>
             </div>
 
           </div>
@@ -63,7 +84,9 @@ class FilterArea extends React.Component<Props, any> {
                      checked={this.props.appState.showOnlyChangedSeries}
                      onChange={(e) => {
                        //console.log(arguments)
-                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       const val = (e.currentTarget.type === 'checkbox'
+                                    ? e.currentTarget.checked
+                                    : e.currentTarget.value) as boolean
                        this.props.appState.setShowOnlyChangedSeries(val)
                      }}
               />
@@ -75,7 +98,9 @@ class FilterArea extends React.Component<Props, any> {
                      id={'show-only-not-watched-ger'}
                      checked={this.props.appState.showOnlyWatcherMissingGer}
                      onChange={(e) => {
-                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       const val = (e.currentTarget.type === 'checkbox'
+                                    ? e.currentTarget.checked
+                                    : e.currentTarget.value) as boolean
                        this.props.appState.setShowOnlyWatcherMissingGer(val)
                      }}
               />
@@ -87,7 +112,9 @@ class FilterArea extends React.Component<Props, any> {
                      id={'show-only-not-watched-eng'}
                      checked={this.props.appState.showOnlyWatcherMissingEng}
                      onChange={(e) => {
-                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       const val = (e.currentTarget.type === 'checkbox'
+                                    ? e.currentTarget.checked
+                                    : e.currentTarget.value) as boolean
                        this.props.appState.setShowOnlyWatcherMissingEng(val)
                      }}
               />
@@ -99,7 +126,9 @@ class FilterArea extends React.Component<Props, any> {
                      id={'show-only-ignored'}
                      checked={this.props.appState.showOnlyIgnoredFilter}
                      onChange={(e) => {
-                       const val = (e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value) as boolean
+                       const val = (e.currentTarget.type === 'checkbox'
+                                    ? e.currentTarget.checked
+                                    : e.currentTarget.value) as boolean
                        this.props.appState.setShowOnlyIgnoredFilter(val)
                      }}
               />

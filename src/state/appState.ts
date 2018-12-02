@@ -242,6 +242,13 @@ export class AppState {
   }
 
   @action
+  resetNewForAllSeries() {
+    for (const series of this.series) {
+      this.resetIsNewState(series)
+    }
+  }
+
+  @action
   setSearchText(text: string) {
     this.searchText = text
   }
@@ -493,18 +500,20 @@ export class AppState {
 
           this.series = capturedSeries
 
+          let removedSeries: Series[] = []
           //compares the old and the current series and carries the old series states to the new captured series
-          const numChangedSeries = SeriesComparer.compareSeries(oldSeries, this.series, [])
+          const numChangedSeries = SeriesComparer.compareSeries(oldSeries, this.series, removedSeries)
 
           this.writeState()
 
           if (numChangedSeries > 0) {
-            DialogHelper.show('Neuigkeiten', `Es gibt ${numChangedSeries} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand wurde automatisch gespeichert.`)
+            DialogHelper.show('Neuigkeiten', `Es gibt ${numChangedSeries} Serien mit Neuerungen. Benutze den entsprechenden Filter, um sie schnell zu finden. Der Zustand wurde automatisch gespeichert. Es wurden ${removedSeries.length} serien entfernt (von der Seite).`)
           }
           else {
-            DialogHelper.show('', 'Keine Neuigkeiten')
+            DialogHelper.show('', `Keine Neuigkeiten. Es wurden ${removedSeries.length} serien entfernt (von der Seite).`)
           }
-
+          console.log('removed series: ')
+          removedSeries.map(p => p.name).forEach(p => console.log(p))
         }
         else {
 

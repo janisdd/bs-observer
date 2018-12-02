@@ -84,38 +84,68 @@ export class SeriesComparer {
    * @param {Series} oldSeries
    * @param {Series} series
    */
-  private static compareSingleSeries(oldSeries: Series, series: Series): { hasSomethingNew: boolean } {
+  private static compareSingleSeries(oldSeries: Series, series: Series): {hasSomethingNew: boolean} {
 
     let hasSomethingNew = false
 
-    //iterate new seasons
-    for (let i = oldSeries.seasons.length; i < series.seasons.length; i++) {
+    //it is possible that a new season is inserted (e.g. specials) so 1 : 1 won't work here...
 
-      hasSomethingNew = true
+    for(let i = 0; i < series.seasons.length;i++) {
+      const season = series.seasons[i]
+      const oldSeason = oldSeries.seasons.find(p => p.seasonId.trim() === season.seasonId.trim())
 
-      // if (series.seasons[i].episodes.length > 0) {
-      series.seasons[i].state = 'new'
-      // }
+      if (!oldSeason) {
+        //season added
+        hasSomethingNew = true
+        season.state = 'new'
 
+        for (const episode of season.episodes) {
 
-      //set all episodes in the new season to new
-      for (const episode of series.seasons[i].episodes) {
-
-        if (episode.name_ger !== null) {
-          episode.state = "newAndGer"
-        }
-        else {
-          episode.state = 'new'
+          if (episode.name_ger !== null) {
+            episode.state = "newAndGer"
+          }
+          else {
+            episode.state = 'new'
+          }
         }
       }
+
     }
 
+    // //iterate new seasons
+    // for (let i = oldSeries.seasons.length; i < series.seasons.length; i++) {
+    //
+    //   hasSomethingNew = true
+    //
+    //   // if (series.seasons[i].episodes.length > 0) {
+    //   series.seasons[i].state = 'new'
+    //   // }
+    //
+    //
+    //   //set all episodes in the new season to new
+    //   for (const episode of series.seasons[i].episodes) {
+    //
+    //     if (episode.name_ger !== null) {
+    //       episode.state = "newAndGer"
+    //     }
+    //     else {
+    //       episode.state = 'new'
+    //     }
+    //   }
+    // }
+
     //then iterate episodes
+
+    //it is possible that a new season is inserted (e.g. specials) so 1 : 1 won't work here...
 
     for (let i = 0; i < oldSeries.seasons.length; i++) {
 
       const oldSeason = oldSeries.seasons[i]
-      const season = series.seasons[i]
+      const season = series.seasons.find(p => p.seasonId.trim() === oldSeason.seasonId.trim())
+
+      if (!season) {
+        throw new Error(`could not find new season with old name ${oldSeason.seasonId}`)
+      }
 
       //preserve state
       season.state = oldSeason.state
@@ -138,6 +168,7 @@ export class SeriesComparer {
       }
 
 
+
       //iterate old episodes
       for (let j = 0; j < oldSeason.episodes.length; j++) {
         const oldEpisode = oldSeason.episodes[j]
@@ -147,16 +178,26 @@ export class SeriesComparer {
         episode.watchedEng = oldEpisode.watchedEng
         episode.watchedGer = oldEpisode.watchedGer
 
-        //check if we have a new lang
-        if (oldEpisode.name_ger === null && episode.name_ger !== null) {
+        //upadate: 02.12.2018
+        //bs no longer have different names for the episodes... so check if the url changed
+
+        // //check if we have a new lang
+        // if (oldEpisode.name_ger === null && episode.name_ger !== null) {
+        //   episode.state = 'gerAdded'
+        //
+        //   hasSomethingNew = true
+        //
+        //   //also mark the parent (season)
+        //   season.state = "new"
+        //   continue
+        // }
+
+        if (oldEpisode.name_en !== episode.name_en) {
           episode.state = 'gerAdded'
-
           hasSomethingNew = true
-
-          //also mark the parent (season)
-          season.state = "new"
-          continue
+          season.state = 'new'
         }
+
 
         //preserve state
         episode.state = oldEpisode.state
